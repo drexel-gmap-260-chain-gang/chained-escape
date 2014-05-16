@@ -14,8 +14,8 @@ window.onload = function() {
 	
 	function create() {
 		game.stage.backgroundColor = 0x404040;
-		player1Bike = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-red');
-		player2Bike = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-blue');
+		player1Bike = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-red');
+		player2Bike = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-blue');
 	}
 	
 	function update() {
@@ -28,6 +28,17 @@ window.onload = function() {
 			player1Bike.y -= bikeVertSpeed;
 		} else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
 			player1Bike.y += bikeVertSpeed;
+		}
+		
+		if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+			player2Bike.x -= bikeHorizSpeed;
+		} else if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+			player2Bike.x += bikeHorizSpeed;
+		}
+		if (game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+			player2Bike.y -= bikeVertSpeed;
+		} else if (game.input.keyboard.isDown(Phaser.Keyboard.S)) {
+			player2Bike.y += bikeVertSpeed;
 		}
 	}
 };
