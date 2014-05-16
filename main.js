@@ -75,9 +75,9 @@ window.onload = function() {
 			var x = xAnchor+(i*xInterval); // all rects are on the same x position
 			var y = yAnchor; // every new rects is positioned below the last
 			if (i%2 == 0) {
-				newRect = game.add.sprite(x, y, 'chain-link-1'); // add sprite
+				newRect = game.add.sprite(x, y, 'chain-link-2'); // add sprite
 			} else {
-				newRect = game.add.sprite(x, y, 'chain-link-2');
+				newRect = game.add.sprite(x, y, 'chain-link-1');
 				lastRect.bringToTop();
 			} // optical polish ..
 			game.physics.p2.enable(newRect, false); // enable physicsbody
