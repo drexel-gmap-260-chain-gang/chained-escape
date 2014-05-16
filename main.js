@@ -86,7 +86,7 @@ window.onload = function() {
 			newRect.body.collides([chainLinkCollisionGroup]);
 			
 			if (i == 0) {
-				game.physics.p2.createRevoluteConstraint(newRect, [0,-10], startSprite, [0,10], maxForce);
+				game.physics.p2.createLockConstraint(newRect, startSprite, [0,10], maxForce);
 				// anchor the first one created
 			} else {
 				newRect.body.mass = 2; // reduce mass for every rope element
@@ -97,7 +97,7 @@ window.onload = function() {
 			}
 			lastRect = newRect;
 			if (i == length) {
-				game.physics.p2.createRevoluteConstraint(newRect, [0,-10], endSprite, [0,10], maxForce);
+				game.physics.p2.createLockConstraint(newRect, endSprite, [0,10], maxForce);
 			}
 		}
 	}
