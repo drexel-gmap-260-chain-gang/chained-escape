@@ -34,7 +34,7 @@ window.onload = function() {
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-red');
 		
 		game.physics.startSystem(Phaser.Physics.P2JS);
-		game.physics.p2.gravity.y = 120;
+		game.physics.p2.gravity.y = 600;
 		
 		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
 		
@@ -89,7 +89,6 @@ window.onload = function() {
 				game.physics.p2.createRevoluteConstraint(newRect, [0,-10], startSprite, [0,10], maxForce);
 				// anchor the first one created
 			} else {
-				newRect.body.velocity.x = 100; // give it a push :)
 				newRect.body.mass = 2; // reduce mass for every rope element
 			}
 			// after the first rectangle is created we can add the constraint
