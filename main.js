@@ -22,8 +22,8 @@ window.onload = function() {
 	function preload() {
 		game.load.image('bike-red', 'images/motorbike-red.png');
 		game.load.image('bike-blue', 'images/motorbike-blue.png');
-		game.load.image('arrow-a', 'images/animArrow0.png');
-		game.load.image('arrow-b', 'images/animArrow1.png');
+		game.load.image('chain-link-1', 'images/chainLink1.png');
+		game.load.image('chain-link-2', 'images/chainLink2.png');
 	}
 	
 	function create() {
