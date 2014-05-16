@@ -89,15 +89,17 @@ window.onload = function() {
 	}
 	
 	function moveBikeWithKeys(sprite, keymap) {
+		sprite.body.setZeroVelocity();
+		
 		if (game.input.keyboard.isDown(keymap["left"])) {
-			sprite.x -= bikeHorizSpeed;
+			sprite.body.moveLeft(bikeHorizSpeed);
 		} else if (game.input.keyboard.isDown(keymap["right"])) {
-			sprite.x += bikeHorizSpeed;
+			sprite.body.moveRight(bikeHorizSpeed);
 		}
 		if (game.input.keyboard.isDown(keymap["up"])) {
-			sprite.y -= bikeVertSpeed;
+			sprite.body.moveUp(bikeVertSpeed);
 		} else if (game.input.keyboard.isDown(keymap["down"])) {
-			sprite.y += bikeVertSpeed;
+			sprite.body.moveDown(bikeVertSpeed);
 		}
 	}
 };
