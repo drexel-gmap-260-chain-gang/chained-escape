@@ -4,11 +4,15 @@ A game for the class GMAP 260 at Drexel University, by the six-person group “C
 
 **[Play the game](http://drexel-gmap-260-chain-gang.github.io/chained-escape/)** (the version hosted on GitHub, built directly from this repository)
 
-Our **[issue backlog](https://waffle.io/drexel-gmap-260-chain-gang/chained-escape)**
-
 [put screenshot or promotional image here]
 
 A 2D top-down action game where your motorbikes are chained together. Runs in the browser, using the [Phaser](http://phaser.io/) game library.
+
+## Links for the team
+
+- Our **[issue backlog](https://waffle.io/drexel-gmap-260-chain-gang/chained-escape)**
+- Game design documents and project production journal [on Google Drive](https://drive.google.com/#folders/0B6QNP3NaM-wCREM4VG94Q3pzQ0k)
+- Convenient Phaser links: [documentation](http://docs.phaser.io/), [examples](http://examples.phaser.io/)
 
 ## Local installation
 
