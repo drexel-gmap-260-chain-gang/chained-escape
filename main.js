@@ -6,39 +6,45 @@ window.onload = function() {
 	var player1Bike;
 	var player2Bike;
 	
+	var player1Keymap = {
+		left: Phaser.Keyboard.LEFT,
+		right: Phaser.Keyboard.RIGHT,
+		up: Phaser.Keyboard.UP,
+		down: Phaser.Keyboard.DOWN,
+	}
+	var player2Keymap = {
+		left: Phaser.Keyboard.A,
+		right: Phaser.Keyboard.D,
+		up: Phaser.Keyboard.W,
+		down: Phaser.Keyboard.S,
+	}
+	
 	function preload() {
-		game.load.image('logo', 'images/phaser.png');
 		game.load.image('bike-red', 'images/motorbike-red.png');
 		game.load.image('bike-blue', 'images/motorbike-blue.png');
 	}
 	
 	function create() {
-		game.stage.backgroundColor = 0x404040;
+		game.stage.backgroundColor = "#404040";
 		player1Bike = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-red');
 		player2Bike = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-blue');
 	}
 	
 	function update() {
-		if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-			player1Bike.x -= bikeHorizSpeed;
-		} else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-			player1Bike.x += bikeHorizSpeed;
+		moveBikeWithKeys(player1Bike, player1Keymap)
+		moveBikeWithKeys(player2Bike, player2Keymap)
+	}
+	
+	function moveBikeWithKeys(sprite, keymap) {
+		if (game.input.keyboard.isDown(keymap["left"])) {
+			sprite.x -= bikeHorizSpeed;
+		} else if (game.input.keyboard.isDown(keymap["right"])) {
+			sprite.x += bikeHorizSpeed;
 		}
-		if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-			player1Bike.y -= bikeVertSpeed;
-		} else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-			player1Bike.y += bikeVertSpeed;
-		}
-		
-		if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
-			player2Bike.x -= bikeHorizSpeed;
-		} else if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
-			player2Bike.x += bikeHorizSpeed;
-		}
-		if (game.input.keyboard.isDown(Phaser.Keyboard.W)) {
-			player2Bike.y -= bikeVertSpeed;
-		} else if (game.input.keyboard.isDown(Phaser.Keyboard.S)) {
-			player2Bike.y += bikeVertSpeed;
+		if (game.input.keyboard.isDown(keymap["up"])) {
+			sprite.y -= bikeVertSpeed;
+		} else if (game.input.keyboard.isDown(keymap["down"])) {
+			sprite.y += bikeVertSpeed;
 		}
 	}
 };
