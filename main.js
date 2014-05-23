@@ -79,7 +79,7 @@ window.onload = function() {
 			
 			game.physics.p2.enable(bike, false);
 			// hack to counteract weight of chain:
-			bike.body.data.gravityScale = -0.15;
+			bike.body.data.gravityScale = -0.155;
 			
 			bike.body.setCollisionGroup(bikeCollisionGroup);
 			bike.body.collides([bikeCollisionGroup]);
