@@ -5,6 +5,7 @@ window.onload = function() {
 	var bikeVertSpeed = 500;
 	
 	var playerBikes = {};
+	var backgroundSprites = {};
 	var testText, splitText;
 	var forces;
 	var timeToSplit;
@@ -47,10 +48,10 @@ window.onload = function() {
 		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'playerBike', 'HUD']);
 		
 		game.stage.backgroundColor = "#404040";
-		game.background1 = game.add.sprite(0, 0, 'backgroundPrison');
-		spriteLayers['background'].add(game.background1);
-		game.background2 = game.add.sprite(0, -800, 'backgroundPrison');
-		spriteLayers['background'].add(game.background2);
+		backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundPrison');
+		spriteLayers['background'].add(backgroundSprites.background1);
+		backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundPrison');
+		spriteLayers['background'].add(backgroundSprites.background2);
 		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
@@ -232,15 +233,17 @@ window.onload = function() {
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
 		
 		if (timeToSplit == 3000) {
-			game.background1 = game.add.sprite(0, 0, 'backgroundCountry');
-			game.background2 = game.add.sprite(0, -800, 'backgroundCountry');
-			backLayer.add(game.background1);
-			backLayer.add(game.background2);
+			backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundCountry');
+			backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundCountry');
+			spriteLayers['background'].removeAll(true);
+			spriteLayers['background'].add(backgroundSprites.background1);
+			spriteLayers['background'].add(backgroundSprites.background2);
 		} else if (timeToSplit == 1000) {
-			game.background1 = game.add.sprite(0, 0, 'backgroundHighway');
-			game.background2 = game.add.sprite(0, -800, 'backgroundHighway');
-			backLayer.add(game.background1);
-			backLayer.add(game.background2);
+			backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundHighway');
+			backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundHighway');
+			spriteLayers['background'].removeAll(true);
+			spriteLayers['background'].add(backgroundSprites.background1);
+			spriteLayers['background'].add(backgroundSprites.background2);
 		} else if (timeToSplit == 0 && chainHealth > 0) {
 			// TODO show crashing animation
 			loseTheGame();
@@ -266,8 +269,8 @@ window.onload = function() {
 			background.y += 20;
 		}
 		
-		moveBackground(game.background1);
-		moveBackground(game.background2);
+		moveBackground(backgroundSprites.background1);
+		moveBackground(backgroundSprites.background2);
 	}
 	
 	function moveBikeWithKeys(sprite, keymap) {
