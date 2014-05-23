@@ -30,8 +30,8 @@ window.onload = function() {
 	var sounds = {};
 	
 	function preload() {
-		game.load.image('bike-red', 'images/motorbike-red.png');
-		game.load.image('bike-blue', 'images/motorbike-blue.png');
+		game.load.image('bike-1', 'images/motorbike-1.png');
+		game.load.image('bike-2', 'images/motorbike-2.png');
 		game.load.image('chain-link-1', 'images/chainLink1.png');
 		game.load.image('chain-link-2', 'images/chainLink2.png');
 		game.load.image('spikes', 'images/spikes2.png');
@@ -41,14 +41,13 @@ window.onload = function() {
 	}
 	
 	function create() {
-		
 		game.stage.backgroundColor = "#404040";
-		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-blue');
-		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-red');
+		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
+		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
 		var spikes = new Spikes(game, 200, 200);
 		game.add.existing(spikes);
-		testText = game.add.text(0,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
-		splitText = game.add.text(0,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
+		testText = game.add.text(10,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
+		splitText = game.add.text(10,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
@@ -61,6 +60,9 @@ window.onload = function() {
 		
 		
 		_.each(playerBikes, function(bike) {
+			// sprites are too big; scale images down
+			bike.scale.setTo(0.6, 0.6);
+			
 			game.physics.p2.enable(bike, false);
 			// hack to counteract weight of chain:
 			bike.body.data.gravityScale = -0.15;
