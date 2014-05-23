@@ -99,6 +99,7 @@ window.onload = function() {
 	
 	function loseTheGame() {
 		playMusic(sounds.defeatSound);
+		var defeatText = game.add.text(150, 200, 'You Lose', {font: "72px Arial", fill: "#ff8080", align: "center"});
 		// TODO show failure screen
 		// TODO allow player to try again or return to main menu
 	}
