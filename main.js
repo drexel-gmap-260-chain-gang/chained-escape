@@ -5,10 +5,10 @@ window.onload = function() {
 	var bikeVertSpeed = 500;
 	
 	var playerBikes = {};
-	var testText;
+	var testText, splitText;
 	var forces;
-	var chainHealth;
-	var chainCooldown;
+	var timeToSplit;
+	var chainHealth, chainCooldown;
 	var p1Vel, p2Vel;
 	
 	var keymaps = {
@@ -39,10 +39,12 @@ window.onload = function() {
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-blue');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-red');
 		testText = game.add.text(0,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
+		splitText = game.add.text(0,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
 		chainCooldown = 0;
+		timeToSplit = 5000;
 		
 		//game.world.boundsCollidesWith
 		
@@ -114,7 +116,10 @@ window.onload = function() {
 	
 	function update() {
 		testText.text = 'Chain health: ' + chainHealth;
+		
 		chainCooldown++;
+		timeToSplit--;
+		splitText.text = 'Distance to fork: ' + timeToSplit;
 		p1Vel = Math.round(playerBikes.player1.body.velocity.x)
 		p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
