@@ -238,6 +238,9 @@ window.onload = function() {
 			game.background2 = game.add.sprite(0, -800, 'backgroundHighway');
 			backLayer.add(game.background1);
 			backLayer.add(game.background2);
+		} else if (timeToSplit == 0 && chainHealth > 0) {
+			// TODO show crashing animation
+			loseTheGame();
 		}
 		
 		var p1Vel = Math.round(playerBikes.player1.body.velocity.x)
