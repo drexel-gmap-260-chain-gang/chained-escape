@@ -57,7 +57,7 @@ window.onload = function() {
 		spriteLayers['playerBike'].add(playerBikes.player1);
 		spriteLayers['playerBike'].add(playerBikes.player2);
 		
-		var spikes = new Spikes(game, 200, 200);
+		var spikes = new Spikes(game, 200, -100);
 		spriteLayers['obstacle'].add(spikes);
 		
 		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
