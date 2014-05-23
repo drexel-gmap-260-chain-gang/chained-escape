@@ -82,16 +82,20 @@ window.onload = function() {
 		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
 		playTwoPartLoopingMusic(sounds.gameplayMusicStart, sounds.gameplayMusicLoop);
 		
-		var playDefeatSoundKey = game.input.keyboard.addKey(Phaser.Keyboard.L);
-		playDefeatSoundKey.onDown.add(playDefeatSound, this);
-		var toggleMuteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
-		toggleMuteKey.onDown.add(toggleMute, this);
-		var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
-		pauseKey.onDown.add(togglePause, this);
+		addHotkey(Phaser.Keyboard.L, loseTheGame, this);
+		addHotkey(Phaser.Keyboard.M, toggleMute, this);
+		addHotkey(Phaser.Keyboard.P, togglePause, this);
 	}
 	
-	function playDefeatSound() {
+	function addHotkey(keyCode, handler, handlerContext) {
+		var hotkey = game.input.keyboard.addKey(keyCode);
+		hotkey.onDown.add(handler, handlerContext);
+	}
+	
+	function loseTheGame() {
 		playMusic(sounds.defeatSound);
+		// TODO show failure screen
+		// TODO allow player to try again or return to main menu
 	}
 	
 	// parameter types – sound: Phaser.Sound, shouldLoop: boolean
