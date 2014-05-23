@@ -9,7 +9,6 @@ window.onload = function() {
 	var forces;
 	var timeToSplit;
 	var chainHealth, chainCooldown;
-	var p1Vel, p2Vel;
 	var backLayer, obstacleLayer, frontLayer;
 	
 	var keymaps = {
@@ -220,8 +219,6 @@ window.onload = function() {
 		chainCooldown++;
 		timeToSplit--;
 		splitText.text = 'Distance to fork: ' + timeToSplit;
-		p1Vel = Math.round(playerBikes.player1.body.velocity.x)
-		p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
 		
@@ -237,16 +234,17 @@ window.onload = function() {
 			backLayer.add(game.background2);
 		}
 		
+		var p1Vel = Math.round(playerBikes.player1.body.velocity.x)
+		var p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
-		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"])))
-		{
-			if (p1Vel == 0 && p2Vel == 0 && chainCooldown > 50)
-			{
+		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"]))) {
+			if (p1Vel == 0 && p2Vel == 0 && chainCooldown > 50) {
 				testText.text = 'kerCHINK!';
 				chainCooldown = 0;
 				chainHealth = chainHealth - 1;
 			}
 		}
+	}
 		
 	function moveBackground(background) {
 		if (background.y > 780) {
