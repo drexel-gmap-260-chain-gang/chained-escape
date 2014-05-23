@@ -9,7 +9,7 @@ window.onload = function() {
 	var forces;
 	var timeToSplit;
 	var chainHealth, chainCooldown;
-	var backLayer, obstacleLayer, frontLayer;
+	var layers = {};
 	
 	var keymaps = {
 		player1: {
@@ -44,26 +44,25 @@ window.onload = function() {
 	}
 	
 	function create() {
-		backLayer = game.add.group();
-		backLayer.z = 0;
-		obstacleLayer = game.add.group();
-		obstacleLayer.z = 1;
-		frontLayer = game.add.group();
-		frontLayer.z = 2;
+		createSpriteLayers(layers, ['background', 'obstacle', 'chain', 'front']);
+		
 		game.stage.backgroundColor = "#404040";
 		game.background1 = game.add.sprite(0, 0, 'backgroundPrison');
-		backLayer.add(game.background1);
+		layers['background'].add(game.background1);
 		game.background2 = game.add.sprite(0, -800, 'backgroundPrison');
-		backLayer.add(game.background2);
+		layers['background'].add(game.background2);
+		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
-		frontLayer.add(playerBikes.player1);
-		frontLayer.add(playerBikes.player2);
+		layers['front'].add(playerBikes.player1);
+		layers['front'].add(playerBikes.player2);
+		
 		var spikes = new Spikes(game, 200, 200);
-		obstacleLayer.add(spikes);
-		game.add.existing(spikes);
+		layers['obstacle'].add(spikes);
+		
 		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
 		splitText = game.add.text(10, 770, 'Distance to fork: 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
+		
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
@@ -71,9 +70,8 @@ window.onload = function() {
 		timeToSplit = 5000;
 		
 		//game.world.boundsCollidesWith
-		game.physics.p2.setBounds(0,0,600,800,true,true,true,true,true);
+		game.physics.p2.setBounds(0, 0, 600, 800, true, true, true, true, true);
 		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
-		
 		
 		_.each(playerBikes, function(bike) {
 			// sprites are too big; scale images down
@@ -95,7 +93,7 @@ window.onload = function() {
 			});
 		});
 		
-		forces = 0;
+		forces = 0; // currently unused
 		createChain(15, playerBikes.player1, playerBikes.player2);
 		
 		sounds.defeatSound = game.add.audio('defeat');
@@ -106,6 +104,14 @@ window.onload = function() {
 		addHotkey(Phaser.Keyboard.L, loseTheGame, this);
 		addHotkey(Phaser.Keyboard.M, toggleMute, this);
 		addHotkey(Phaser.Keyboard.P, togglePause, this);
+	}
+	
+	function createSpriteLayers(objectToStoreLayersIn, layerNamesFromBackToFront) {
+		_.each(layerNamesFromBackToFront, function(name, index) {
+			var layer = game.add.group(undefined, name);
+			layer.z = index;
+			objectToStoreLayersIn[name] = layer;
+		});
 	}
 	
 	function addHotkey(keyCode, handler, handlerContext) {
@@ -185,9 +191,9 @@ window.onload = function() {
 			var x = xAnchor-(i*xInterval); // all rects are on the same x position
 			var y = yAnchor; // every new rects is positioned below the last
 			if (i%2 == 0) {
-				newRect = game.add.sprite(x, y, 'chain-link-2'); // add sprite
+				newRect = game.add.sprite(x, y, 'chain-link-2', undefined, layers['chain']); // add sprite
 			} else {
-				newRect = game.add.sprite(x, y, 'chain-link-1');
+				newRect = game.add.sprite(x, y, 'chain-link-1', undefined, layers['chain']);
 				lastRect.bringToTop();
 			} // optical polish ..
 			game.physics.p2.enable(newRect, false); // enable physicsbody
