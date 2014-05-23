@@ -79,6 +79,8 @@ window.onload = function() {
 		
 		var playDefeatSoundKey = game.input.keyboard.addKey(Phaser.Keyboard.L);
 		playDefeatSoundKey.onDown.add(playDefeatSound, this);
+		var toggleMuteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
+		toggleMuteKey.onDown.add(toggleMute, this);
 	}
 	
 	function playDefeatSound() {
@@ -92,6 +94,10 @@ window.onload = function() {
 		}
 		music = sound;
 		music.play();
+	}
+	
+	function toggleMute() {
+		game.sound.mute = !game.sound.mute;
 	}
 	
 	function createChain(length, startSprite, endSprite) {
