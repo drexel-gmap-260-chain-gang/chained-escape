@@ -166,7 +166,7 @@ window.onload = function() {
 		var width = 16; // this is the width for the physics body… if too small the rectangles will get scrambled together
 		var maxForce = 20000; // the force that holds the rectangles together
 		for (var i=0; i<=length; i++) {
-			var x = xAnchor+(i*xInterval); // all rects are on the same x position
+			var x = xAnchor-(i*xInterval); // all rects are on the same x position
 			var y = yAnchor; // every new rects is positioned below the last
 			if (i%2 == 0) {
 				newRect = game.add.sprite(x, y, 'chain-link-2'); // add sprite
