@@ -5,6 +5,11 @@ window.onload = function() {
 	var bikeVertSpeed = 500;
 	
 	var playerBikes = {};
+	var testText;
+	var forces;
+	var chainHealth;
+	var chainCooldown;
+	var p1Vel, p2Vel;
 	
 	var keymaps = {
 		player1: {
@@ -29,16 +34,20 @@ window.onload = function() {
 	}
 	
 	function create() {
+		
 		game.stage.backgroundColor = "#404040";
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-blue');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-red');
-		
+		testText = game.add.text(0,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
-		game.physics.p2.setBounds(0,0,600,800,true,true,true,true,true);
+		chainHealth = 10;
+		chainCooldown = 0;
+		
 		//game.world.boundsCollidesWith
 		
 		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
+		game.physics.p2.setBounds(0,0,600,800,true,true,true,true,true);
 		
 		_.each(playerBikes, function(bike) {
 			game.physics.p2.enable(bike, false);
@@ -50,13 +59,12 @@ window.onload = function() {
 			bike.body.data.mass = 100;
 			bike.body.fixedRotation = true;
 		})
-		//game.world.boundsCollidesWith(bikeCollisionGroup);
 		_.each(keymaps, function(keymap) {
 			_.each(keymap, function(keyCode, direction) {
 				game.input.keyboard.addKey(keyCode);
 			});
 		});
-	
+		forces = 0;
 		createChain(15, playerBikes.player1, playerBikes.player2);
 	}
 	
@@ -105,8 +113,23 @@ window.onload = function() {
 	}
 	
 	function update() {
+		testText.text = 'Chain health: ' + chainHealth;
+		chainCooldown++;
+		p1Vel = Math.round(playerBikes.player1.body.velocity.x)
+		p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
+		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
+		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"])))
+		{
+			if (p1Vel == 0 && p2Vel == 0 && chainCooldown > 50)
+			{
+				testText.text = 'kerCHINK!';
+				chainCooldown = 0;
+				chainHealth = chainHealth - 1;
+			}
+		}
+		
 	}
 	
 	function moveBikeWithKeys(sprite, keymap) {
