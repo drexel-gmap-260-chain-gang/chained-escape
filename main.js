@@ -34,8 +34,9 @@ window.onload = function() {
 		game.load.image('bike-blue', 'images/motorbike-blue.png');
 		game.load.image('chain-link-1', 'images/chainLink1.png');
 		game.load.image('chain-link-2', 'images/chainLink2.png');
-		
+		game.load.image('spikes', 'images/spikes2.png');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
+		
 	}
 	
 	function create() {
@@ -43,6 +44,8 @@ window.onload = function() {
 		game.stage.backgroundColor = "#404040";
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-blue');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-red');
+		var spikes = new Spikes(game, 200, 200);
+		game.add.existing(spikes);
 		testText = game.add.text(0,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		splitText = game.add.text(0,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		game.physics.startSystem(Phaser.Physics.P2JS);
@@ -52,9 +55,9 @@ window.onload = function() {
 		timeToSplit = 5000;
 		
 		//game.world.boundsCollidesWith
-		
-		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
 		game.physics.p2.setBounds(0,0,600,800,true,true,true,true,true);
+		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
+		
 		
 		_.each(playerBikes, function(bike) {
 			game.physics.p2.enable(bike, false);
@@ -63,6 +66,7 @@ window.onload = function() {
 			
 			bike.body.setCollisionGroup(bikeCollisionGroup);
 			bike.body.collides([bikeCollisionGroup]);
+			
 			bike.body.data.mass = 100;
 			bike.body.fixedRotation = true;
 		})
@@ -132,6 +136,7 @@ window.onload = function() {
 			newRect.body.setRectangle(width, height); // set custom rectangle
 			newRect.body.setCollisionGroup(chainLinkCollisionGroup);
 			newRect.body.collides([chainLinkCollisionGroup]);
+			newRect.body.collideWorldBounds = false;
 			
 			if (i == 0) {
 				game.physics.p2.createLockConstraint(newRect, startSprite, [0,10], maxForce);
@@ -188,4 +193,21 @@ window.onload = function() {
 			sprite.body.moveDown(bikeVertSpeed);
 		}
 	}
+	
+	function Spikes(game, x, y, frame) {  
+	Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
+
+	var struck = false;
+
+	};
+
+	Spikes.prototype = Object.create(Phaser.Sprite.prototype);  
+	Spikes.prototype.constructor = Spikes;
+
+	Spikes.prototype.update = function() {
+
+	  this.y++;
+
+	};
 };
+
