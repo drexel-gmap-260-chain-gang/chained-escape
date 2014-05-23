@@ -27,7 +27,7 @@ window.onload = function() {
 	}
 	
 	var music; // whatever music is currently playing
-	var defeatSound;
+	var sounds = {};
 	
 	function preload() {
 		game.load.image('bike-red', 'images/motorbike-red.png');
@@ -36,7 +36,8 @@ window.onload = function() {
 		game.load.image('chain-link-2', 'images/chainLink2.png');
 		game.load.image('spikes', 'images/spikes2.png');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
-		
+		game.load.audio('gameplay-start', 'sounds/gameplay music, start of loop.mp3');
+		game.load.audio('gameplay-loop', 'sounds/gameplay music, looping part.mp3');
 	}
 	
 	function create() {
@@ -79,26 +80,64 @@ window.onload = function() {
 		forces = 0;
 		createChain(15, playerBikes.player1, playerBikes.player2);
 		
-		defeatSound = game.add.audio('defeat');
+		sounds.defeatSound = game.add.audio('defeat');
+		sounds.gameplayMusicStart = game.add.audio('gameplay-start');
+		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
+		playTwoPartLoopingMusic(sounds.gameplayMusicStart, sounds.gameplayMusicLoop);
 		
-		var playDefeatSoundKey = game.input.keyboard.addKey(Phaser.Keyboard.L);
-		playDefeatSoundKey.onDown.add(playDefeatSound, this);
-		var toggleMuteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
-		toggleMuteKey.onDown.add(toggleMute, this);
-		var pauseKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
-		pauseKey.onDown.add(togglePause, this);
+		addHotkey(Phaser.Keyboard.L, loseTheGame, this);
+		addHotkey(Phaser.Keyboard.M, toggleMute, this);
+		addHotkey(Phaser.Keyboard.P, togglePause, this);
 	}
 	
-	function playDefeatSound() {
-		playMusic(defeatSound);
+	function addHotkey(keyCode, handler, handlerContext) {
+		var hotkey = game.input.keyboard.addKey(keyCode);
+		hotkey.onDown.add(handler, handlerContext);
 	}
 	
-	function playMusic(sound) {
+	function loseTheGame() {
+		playMusic(sounds.defeatSound);
+		// TODO show failure screen
+		// TODO allow player to try again or return to main menu
+	}
+	
+	// parameter types – sound: Phaser.Sound, shouldLoop: boolean
+	function playMusic(sound, shouldLoop) {
+		if (typeof shouldLoop === 'undefined') { shouldLoop = false; }
+		
 		// prevent more than one piece of music playing at once
 		if (music !== undefined) {
 			music.stop();
 		}
 		music = sound;
+		music.play(undefined, undefined, undefined, shouldLoop, true);
+	}
+	
+	// play the first sound once, followed by the second sound looping forever
+	function playTwoPartLoopingMusic(startSound, loopingSound) {
+		if (music !== undefined) {
+			music.stop();
+		}
+		
+		var startSoundFinishedSignal = new Phaser.Signal();
+		startSound.onStop = startSoundFinishedSignal;
+		
+		// currentlyInStopHandler: a lock to prevent infinite recursion from calling music.stop()
+		// it will be closed over (closure) by the function below
+		var currentlyInStopHandler = false;
+		
+		startSoundFinishedSignal.addOnce(function(stoppedSound) {
+			if (!currentlyInStopHandler) {
+				currentlyInStopHandler = true;
+				
+				var soundHasReachedEnd = stoppedSound.currentTime >= stoppedSound.durationMS;
+				if (soundHasReachedEnd) {
+					playMusic(loopingSound, true);
+				}
+			}
+		}, this);
+		
+		music = startSound;
 		music.play();
 	}
 	
