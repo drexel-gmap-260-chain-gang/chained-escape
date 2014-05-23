@@ -46,8 +46,8 @@ window.onload = function() {
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
 		var spikes = new Spikes(game, 200, 200);
 		game.add.existing(spikes);
-		testText = game.add.text(10,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
-		splitText = game.add.text(10,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
+		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
+		splitText = game.add.text(10, 770, 'Distance to fork: 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
