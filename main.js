@@ -62,7 +62,7 @@ window.onload = function() {
 		frontLayer.add(playerBikes.player2);
 		var spikes = new Spikes(game, 200, 200);
 		obLayer.add(spikes);
-		//game.add.existing(spikes);
+		game.add.existing(spikes);
 		testText = game.add.text(10,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		splitText = game.add.text(10,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		game.physics.startSystem(Phaser.Physics.P2JS);
