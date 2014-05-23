@@ -27,7 +27,7 @@ window.onload = function() {
 	}
 	
 	var music; // whatever music is currently playing
-	var defeatSound;
+	var sounds = {};
 	
 	function preload() {
 		game.load.image('bike-red', 'images/motorbike-red.png');
@@ -36,6 +36,8 @@ window.onload = function() {
 		game.load.image('chain-link-2', 'images/chainLink2.png');
 		
 		game.load.audio('defeat', 'sounds/defeat.mp3');
+		game.load.audio('gameplay-start', 'sounds/gameplay music, start of loop.mp3');
+		game.load.audio('gameplay-loop', 'sounds/gameplay music, looping part.mp3');
 	}
 	
 	function create() {
@@ -75,7 +77,10 @@ window.onload = function() {
 		forces = 0;
 		createChain(15, playerBikes.player1, playerBikes.player2);
 		
-		defeatSound = game.add.audio('defeat');
+		sounds.defeatSound = game.add.audio('defeat');
+		sounds.gameplayMusicStart = game.add.audio('gameplay-start');
+		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
+		playTwoPartLoopingMusic(sounds.gameplayMusicStart, sounds.gameplayMusicLoop);
 		
 		var playDefeatSoundKey = game.input.keyboard.addKey(Phaser.Keyboard.L);
 		playDefeatSoundKey.onDown.add(playDefeatSound, this);
@@ -86,15 +91,46 @@ window.onload = function() {
 	}
 	
 	function playDefeatSound() {
-		playMusic(defeatSound);
+		playMusic(sounds.defeatSound);
 	}
 	
-	function playMusic(sound) {
+	// parameter types – sound: Phaser.Sound, shouldLoop: boolean
+	function playMusic(sound, shouldLoop) {
+		if (typeof shouldLoop === 'undefined') { shouldLoop = false; }
+		
 		// prevent more than one piece of music playing at once
 		if (music !== undefined) {
 			music.stop();
 		}
 		music = sound;
+		music.play(undefined, undefined, undefined, shouldLoop, true);
+	}
+	
+	// play the first sound once, followed by the second sound looping forever
+	function playTwoPartLoopingMusic(startSound, loopingSound) {
+		if (music !== undefined) {
+			music.stop();
+		}
+		
+		var startSoundFinishedSignal = new Phaser.Signal();
+		startSound.onStop = startSoundFinishedSignal;
+		
+		// currentlyInStopHandler: a lock to prevent infinite recursion from calling music.stop()
+		// it will be closed over (closure) by the function below
+		var currentlyInStopHandler = false;
+		
+		startSoundFinishedSignal.addOnce(function(stoppedSound) {
+			if (!currentlyInStopHandler) {
+				currentlyInStopHandler = true;
+				
+				var soundHasReachedEnd = stoppedSound.currentTime >= stoppedSound.durationMS;
+				if (soundHasReachedEnd) {
+					playMusic(loopingSound, true);
+				}
+			}
+		}, this);
+		
+		music = startSound;
 		music.play();
 	}
 	
