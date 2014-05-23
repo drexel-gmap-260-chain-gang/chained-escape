@@ -9,7 +9,7 @@ window.onload = function() {
 	var forces;
 	var timeToSplit;
 	var chainHealth, chainCooldown;
-	var layers = {};
+	var spriteLayers = {};
 	
 	var keymaps = {
 		player1: {
@@ -44,21 +44,21 @@ window.onload = function() {
 	}
 	
 	function create() {
-		createSpriteLayers(layers, ['background', 'obstacle', 'chain', 'front']);
+		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'front']);
 		
 		game.stage.backgroundColor = "#404040";
 		game.background1 = game.add.sprite(0, 0, 'backgroundPrison');
-		layers['background'].add(game.background1);
+		spriteLayers['background'].add(game.background1);
 		game.background2 = game.add.sprite(0, -800, 'backgroundPrison');
-		layers['background'].add(game.background2);
+		spriteLayers['background'].add(game.background2);
 		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
-		layers['front'].add(playerBikes.player1);
-		layers['front'].add(playerBikes.player2);
+		spriteLayers['front'].add(playerBikes.player1);
+		spriteLayers['front'].add(playerBikes.player2);
 		
 		var spikes = new Spikes(game, 200, 200);
-		layers['obstacle'].add(spikes);
+		spriteLayers['obstacle'].add(spikes);
 		
 		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
 		splitText = game.add.text(10, 770, 'Distance to fork: 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
@@ -188,15 +188,16 @@ window.onload = function() {
 		var width = 16; // this is the width for the physics body… if too small the rectangles will get scrambled together
 		var maxForce = 20000; // the force that holds the rectangles together
 		for (var i=0; i<=length; i++) {
-			var x = xAnchor-(i*xInterval); // all rects are on the same x position
-			var y = yAnchor; // every new rects is positioned below the last
+			var x = xAnchor-(i*xInterval); // creat chain links from right to left
+			var y = yAnchor;
 			if (i%2 == 0) {
-				newRect = game.add.sprite(x, y, 'chain-link-2', undefined, layers['chain']); // add sprite
+				newRect = game.add.sprite(x, y, 'chain-link-2', undefined, spriteLayers['chain']);
 			} else {
-				newRect = game.add.sprite(x, y, 'chain-link-1', undefined, layers['chain']);
-				lastRect.bringToTop();
-			} // optical polish ..
+				newRect = game.add.sprite(x, y, 'chain-link-1', undefined, spriteLayers['chain']);
+				lastRect.bringToTop(); // sideways chains appear to cover head-on ones
+			}
 			game.physics.p2.enable(newRect, false); // enable physicsbody
+			newRect.body.angle = 90;
 			newRect.body.setRectangle(width, height); // set custom rectangle
 			newRect.body.setCollisionGroup(chainLinkCollisionGroup);
 			newRect.body.collides([chainLinkCollisionGroup]);
