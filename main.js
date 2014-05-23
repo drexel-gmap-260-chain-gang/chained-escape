@@ -237,19 +237,17 @@ window.onload = function() {
 	}
 	
 	function Spikes(game, x, y, frame) {  
-	Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
-
-	var struck = false;
-
+		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
+		this.verticalSpeed = 3;
+		
+		var struck = false;
 	};
-
-	Spikes.prototype = Object.create(Phaser.Sprite.prototype);  
+	
+	Spikes.prototype = Object.create(Phaser.Sprite.prototype);
 	Spikes.prototype.constructor = Spikes;
-
+	
 	Spikes.prototype.update = function() {
-
-	  this.y++;
-
+		this.y += this.verticalSpeed;
 	};
 };
 
