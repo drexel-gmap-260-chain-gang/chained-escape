@@ -10,6 +10,7 @@ window.onload = function() {
 	var timeToSplit;
 	var chainHealth, chainCooldown;
 	var p1Vel, p2Vel;
+	var backLayer, obLayer, frontLayer
 	
 	var keymaps = {
 		player1: {
@@ -30,6 +31,9 @@ window.onload = function() {
 	var sounds = {};
 	
 	function preload() {
+		game.load.image('backgroundCountry', 'images/road-country-scaled.png');
+		game.load.image('backgroundPrison', 'images/road-prison.png');
+		game.load.image('backgroundHighway', 'images/road-highway-scaled.png');
 		game.load.image('bike-1', 'images/motorbike-1.png');
 		game.load.image('bike-2', 'images/motorbike-2.png');
 		game.load.image('chain-link-1', 'images/chainLink1.png');
@@ -41,13 +45,26 @@ window.onload = function() {
 	}
 	
 	function create() {
+		backLayer = game.add.group();
+		backLayer.z = 0;
+		obLayer = game.add.group();
+		obLayer.z = 1;
+		frontLayer = game.add.group();
+		frontLayer.z = 2;
 		game.stage.backgroundColor = "#404040";
+		game.background1 = game.add.sprite(0, 0, 'backgroundPrison');
+		backLayer.add(game.background1);
+		game.background2 = game.add.sprite(0, -800, 'backgroundPrison');
+		backLayer.add(game.background2);
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
+		frontLayer.add(playerBikes.player1);
+		frontLayer.add(playerBikes.player2);
 		var spikes = new Spikes(game, 200, 200);
+		obLayer.add(spikes);
 		game.add.existing(spikes);
-		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
-		splitText = game.add.text(10, 770, 'Distance to fork: 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
+		testText = game.add.text(10,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
+		splitText = game.add.text(10,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
@@ -208,6 +225,21 @@ window.onload = function() {
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
 		
+		if (timeToSplit == 3000)
+			{
+				game.background1 = game.add.sprite(0, 0, 'backgroundCountry');
+				game.background2 = game.add.sprite(0, -800, 'backgroundCountry');
+				backLayer.add(game.background1);
+				backLayer.add(game.background2);
+			}
+			if (timeToSplit == 1000)
+			{
+				game.background1 = game.add.sprite(0, 0, 'backgroundHighway');
+				game.background2 = game.add.sprite(0, -800, 'backgroundHighway');
+				backLayer.add(game.background1);
+				backLayer.add(game.background2);
+			}
+		
 		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
 		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"])))
 		{
@@ -219,6 +251,18 @@ window.onload = function() {
 			}
 		}
 		
+		var moveBackground = function(background) {
+		
+		  if (background.y > 780) {
+			background.y = -800;
+			background.y += 20;
+		  } else {}
+			background.y +=20;
+		}
+		
+		moveBackground(game.background1);
+		moveBackground(game.background2);
+
 	}
 	
 	function moveBikeWithKeys(sprite, keymap) {
