@@ -291,7 +291,7 @@ window.onload = function() {
 	
 	function Spikes(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
-		this.verticalSpeed = 3;
+		this.verticalSpeed = 6;
 		
 		var struck = false;
 	};
