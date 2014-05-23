@@ -1,5 +1,5 @@
 window.onload = function() {
-	var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game-area', { preload: preload, create: create, update: update });
+	var game = new Phaser.Game(600, 800, Phaser.AUTO, 'game-area', { preload: preload, create: create, update: update });
 	
 	var bikeHorizSpeed = 500;
 	var bikeVertSpeed = 500;
@@ -35,6 +35,8 @@ window.onload = function() {
 		
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
+		game.physics.p2.setBounds(0,0,600,800,true,true,true,true,true);
+		game.world.boundsCollidesWith
 		
 		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
 		
