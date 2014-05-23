@@ -26,11 +26,16 @@ window.onload = function() {
 		}
 	}
 	
+	var music; // whatever music is currently playing
+	var defeatSound;
+	
 	function preload() {
 		game.load.image('bike-red', 'images/motorbike-red.png');
 		game.load.image('bike-blue', 'images/motorbike-blue.png');
 		game.load.image('chain-link-1', 'images/chainLink1.png');
 		game.load.image('chain-link-2', 'images/chainLink2.png');
+		
+		game.load.audio('defeat', 'sounds/defeat.mp3');
 	}
 	
 	function create() {
@@ -66,11 +71,30 @@ window.onload = function() {
 				game.input.keyboard.addKey(keyCode);
 			});
 		});
+		
 		forces = 0;
 		createChain(15, playerBikes.player1, playerBikes.player2);
+		
+		defeatSound = game.add.audio('defeat');
+		
+		var playDefeatSoundKey = game.input.keyboard.addKey(Phaser.Keyboard.L);
+		playDefeatSoundKey.onDown.add(playDefeatSound, this);
 	}
 	
-	function createChain(length, startSprite, endSprite){
+	function playDefeatSound() {
+		playMusic(defeatSound);
+	}
+	
+	function playMusic(sound) {
+		// prevent more than one piece of music playing at once
+		if (music !== undefined) {
+			music.stop();
+		}
+		music = sound;
+		music.play();
+	}
+	
+	function createChain(length, startSprite, endSprite) {
 		var lastRect; // if we created our first rect this will contain it
 		var xLimit = Math.abs(startSprite.x - endSprite.x);
 		var xInterval = xLimit / length;
@@ -101,7 +125,7 @@ window.onload = function() {
 				game.physics.p2.createLockConstraint(newRect, startSprite, [0,10], maxForce);
 				// anchor the first one created
 			} else {
-				newRect.body.mass = 2; // reduce mass for every rope element
+				newRect.body.mass = 2; // reduce mass for every chain link
 			}
 			// after the first rectangle is created we can add the constraint
 			if (lastRect) {
@@ -124,6 +148,7 @@ window.onload = function() {
 		p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
+		
 		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
 		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"])))
 		{
