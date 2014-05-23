@@ -36,7 +36,7 @@ window.onload = function() {
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		game.physics.p2.setBounds(0,0,600,800,true,true,true,true,true);
-		game.world.boundsCollidesWith
+		//game.world.boundsCollidesWith
 		
 		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
 		
@@ -50,7 +50,7 @@ window.onload = function() {
 			bike.body.data.mass = 100;
 			bike.body.fixedRotation = true;
 		})
-		
+		//game.world.boundsCollidesWith(bikeCollisionGroup);
 		_.each(keymaps, function(keymap) {
 			_.each(keymap, function(keyCode, direction) {
 				game.input.keyboard.addKey(keyCode);
