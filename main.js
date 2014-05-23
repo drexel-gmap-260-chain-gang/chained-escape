@@ -44,7 +44,7 @@ window.onload = function() {
 	}
 	
 	function create() {
-		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'front']);
+		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'playerBike', 'HUD']);
 		
 		game.stage.backgroundColor = "#404040";
 		game.background1 = game.add.sprite(0, 0, 'backgroundPrison');
@@ -54,14 +54,16 @@ window.onload = function() {
 		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
-		spriteLayers['front'].add(playerBikes.player1);
-		spriteLayers['front'].add(playerBikes.player2);
+		spriteLayers['playerBike'].add(playerBikes.player1);
+		spriteLayers['playerBike'].add(playerBikes.player2);
 		
 		var spikes = new Spikes(game, 200, 200);
 		spriteLayers['obstacle'].add(spikes);
 		
 		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
+		spriteLayers['HUD'].add(testText)
 		splitText = game.add.text(10, 770, 'Distance to fork: 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
+		spriteLayers['HUD'].add(splitText)
 		
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
