@@ -5,12 +5,12 @@ window.onload = function() {
 	var bikeVertSpeed = 500;
 	
 	var playerBikes = {};
+	var backgroundSprites = {};
 	var testText, splitText;
 	var forces;
 	var timeToSplit;
 	var chainHealth, chainCooldown;
-	var p1Vel, p2Vel;
-	var backLayer, obLayer, frontLayer
+	var spriteLayers = {};
 	
 	var keymaps = {
 		player1: {
@@ -45,28 +45,27 @@ window.onload = function() {
 	}
 	
 	function create() {
-		backLayer = game.add.group();
-		backLayer.z = 0;
-		obLayer = game.add.group();
-		obLayer.z = 1;
-		frontLayer = game.add.group();
-		frontLayer.z = 2;
+		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'playerBike', 'HUD']);
+		
 		game.stage.backgroundColor = "#404040";
-		game.background1 = game.add.sprite(0, 0, 'backgroundPrison');
-		backLayer.add(game.background1);
-		game.background2 = game.add.sprite(0, -800, 'backgroundPrison');
-		backLayer.add(game.background2);
-		var spikes = new Spikes(game, 200, 200);
-		obLayer.add(spikes);
-		game.add.existing(spikes);
+		backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundPrison');
+		spriteLayers['background'].add(backgroundSprites.background1);
+		backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundPrison');
+		spriteLayers['background'].add(backgroundSprites.background2);
 		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
-		frontLayer.add(playerBikes.player1);
-		frontLayer.add(playerBikes.player2);
+		spriteLayers['playerBike'].add(playerBikes.player1);
+		spriteLayers['playerBike'].add(playerBikes.player2);
 		
-		testText = game.add.text(10,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
-		splitText = game.add.text(10,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
+		var spikes = new Spikes(game, 200, -100);
+		spriteLayers['obstacle'].add(spikes);
+		
+		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
+		spriteLayers['HUD'].add(testText)
+		splitText = game.add.text(10, 770, 'Distance to fork: 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
+		spriteLayers['HUD'].add(splitText)
+
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
@@ -74,9 +73,8 @@ window.onload = function() {
 		timeToSplit = 5000;
 		
 		//game.world.boundsCollidesWith
-		game.physics.p2.setBounds(0,0,600,800,true,true,true,true,true);
+		game.physics.p2.setBounds(0, 0, 600, 800, true, true, true, true, true);
 		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
-		
 		
 		_.each(playerBikes, function(bike) {
 			// sprites are too big; scale images down
@@ -84,7 +82,7 @@ window.onload = function() {
 			
 			game.physics.p2.enable(bike, false);
 			// hack to counteract weight of chain:
-			bike.body.data.gravityScale = -0.15;
+			bike.body.data.gravityScale = -0.155;
 			
 			bike.body.setCollisionGroup(bikeCollisionGroup);
 			bike.body.collides([bikeCollisionGroup]);
@@ -99,7 +97,7 @@ window.onload = function() {
 			});
 		});
 		
-		forces = 0;
+		forces = 0; // currently unused
 		createChain(15, playerBikes.player1, playerBikes.player2);
 		
 		sounds.defeatSound = game.add.audio('defeat');
@@ -112,6 +110,14 @@ window.onload = function() {
 		addHotkey(Phaser.Keyboard.P, togglePause, this);
 	}
 	
+	function createSpriteLayers(objectToStoreLayersIn, layerNamesFromBackToFront) {
+		_.each(layerNamesFromBackToFront, function(name, index) {
+			var layer = game.add.group(undefined, name);
+			layer.z = index;
+			objectToStoreLayersIn[name] = layer;
+		});
+	}
+	
 	function addHotkey(keyCode, handler, handlerContext) {
 		var hotkey = game.input.keyboard.addKey(keyCode);
 		hotkey.onDown.add(handler, handlerContext);
@@ -119,6 +125,8 @@ window.onload = function() {
 	
 	function loseTheGame() {
 		playMusic(sounds.defeatSound);
+		var defeatText = game.add.text(150, 200, 'You Lose', {font: "72px Arial", fill: "#ff8080", align: "center"});
+		spriteLayers['HUD'].add(defeatText)
 		// TODO show failure screen
 		// TODO allow player to try again or return to main menu
 	}
@@ -185,15 +193,16 @@ window.onload = function() {
 		var width = 16; // this is the width for the physics body… if too small the rectangles will get scrambled together
 		var maxForce = 20000; // the force that holds the rectangles together
 		for (var i=0; i<=length; i++) {
-			var x = xAnchor+(i*xInterval); // all rects are on the same x position
-			var y = yAnchor; // every new rects is positioned below the last
+			var x = xAnchor-(i*xInterval); // creat chain links from right to left
+			var y = yAnchor;
 			if (i%2 == 0) {
-				newRect = game.add.sprite(x, y, 'chain-link-2'); // add sprite
+				newRect = game.add.sprite(x, y, 'chain-link-2', undefined, spriteLayers['chain']);
 			} else {
-				newRect = game.add.sprite(x, y, 'chain-link-1');
-				lastRect.bringToTop();
-			} // optical polish ..
+				newRect = game.add.sprite(x, y, 'chain-link-1', undefined, spriteLayers['chain']);
+				lastRect.bringToTop(); // sideways chains appear to cover head-on ones
+			}
 			game.physics.p2.enable(newRect, false); // enable physicsbody
+			newRect.body.angle = 90;
 			newRect.body.setRectangle(width, height); // set custom rectangle
 			newRect.body.setCollisionGroup(chainLinkCollisionGroup);
 			newRect.body.collides([chainLinkCollisionGroup]);
@@ -222,49 +231,48 @@ window.onload = function() {
 		chainCooldown++;
 		timeToSplit--;
 		splitText.text = 'Distance to fork: ' + timeToSplit;
-		p1Vel = Math.round(playerBikes.player1.body.velocity.x)
-		p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
 		
-		if (timeToSplit == 3000)
-			{
-				game.background1 = game.add.sprite(0, 0, 'backgroundCountry');
-				game.background2 = game.add.sprite(0, -800, 'backgroundCountry');
-				backLayer.add(game.background1);
-				backLayer.add(game.background2);
-			}
-			if (timeToSplit == 1000)
-			{
-				game.background1 = game.add.sprite(0, 0, 'backgroundHighway');
-				game.background2 = game.add.sprite(0, -800, 'backgroundHighway');
-				backLayer.add(game.background1);
-				backLayer.add(game.background2);
-			}
+		if (timeToSplit == 3000) {
+			backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundCountry');
+			backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundCountry');
+			spriteLayers['background'].removeAll(true);
+			spriteLayers['background'].add(backgroundSprites.background1);
+			spriteLayers['background'].add(backgroundSprites.background2);
+		} else if (timeToSplit == 1000) {
+			backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundHighway');
+			backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundHighway');
+			spriteLayers['background'].removeAll(true);
+			spriteLayers['background'].add(backgroundSprites.background1);
+			spriteLayers['background'].add(backgroundSprites.background2);
+		} else if (timeToSplit == 0 && chainHealth > 0) {
+			// TODO show crashing animation
+			loseTheGame();
+		}
 		
+		var p1Vel = Math.round(playerBikes.player1.body.velocity.x)
+		var p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
-		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"])))
-		{
-			if (p1Vel == 0 && p2Vel == 0 && chainCooldown > 50)
-			{
+		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"]))) {
+			if (p1Vel == 0 && p2Vel == 0 && chainCooldown > 50) {
 				testText.text = 'kerCHINK!';
 				chainCooldown = 0;
 				chainHealth = chainHealth - 1;
 			}
 		}
+	}
 		
-		var moveBackground = function(background) {
-		
-		  if (background.y > 780) {
+	function moveBackground(background) {
+		if (background.y > 780) {
 			background.y = -800;
 			background.y += 20;
-		  } else {}
-			background.y +=20;
+		} else {
+			background.y += 20;
 		}
 		
-		moveBackground(game.background1);
-		moveBackground(game.background2);
-
+		moveBackground(backgroundSprites.background1);
+		moveBackground(backgroundSprites.background2);
 	}
 	
 	function moveBikeWithKeys(sprite, keymap) {
@@ -283,20 +291,17 @@ window.onload = function() {
 	}
 	
 	function Spikes(game, x, y, frame) {  
-	Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
-	this.scale.setTo(0.2,0.2);
-	var struck = false;
-	this.z = 1;
-
+		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
+		this.verticalSpeed = 6;
+		
+		var struck = false;
 	};
-
-	Spikes.prototype = Object.create(Phaser.Sprite.prototype);  
+	
+	Spikes.prototype = Object.create(Phaser.Sprite.prototype);
 	Spikes.prototype.constructor = Spikes;
-
+	
 	Spikes.prototype.update = function() {
-
-	  this.y++;
-
+		this.y += this.verticalSpeed;
 	};
 };
 
