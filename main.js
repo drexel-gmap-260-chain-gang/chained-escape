@@ -56,13 +56,15 @@ window.onload = function() {
 		backLayer.add(game.background1);
 		game.background2 = game.add.sprite(0, -800, 'backgroundPrison');
 		backLayer.add(game.background2);
+		var spikes = new Spikes(game, 200, 200);
+		obLayer.add(spikes);
+		game.add.existing(spikes);
+		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
 		frontLayer.add(playerBikes.player1);
 		frontLayer.add(playerBikes.player2);
-		var spikes = new Spikes(game, 200, 200);
-		obLayer.add(spikes);
-		game.add.existing(spikes);
+		
 		testText = game.add.text(10,400,'forces = 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		splitText = game.add.text(10,600,'Distance to fork: 0',{ font: "20px Arial", fill: "#ffffff", align: "left" });
 		game.physics.startSystem(Phaser.Physics.P2JS);
@@ -89,6 +91,7 @@ window.onload = function() {
 			
 			bike.body.data.mass = 100;
 			bike.body.fixedRotation = true;
+			frontLayer.add(bike);
 		})
 		_.each(keymaps, function(keymap) {
 			_.each(keymap, function(keyCode, direction) {
@@ -281,8 +284,9 @@ window.onload = function() {
 	
 	function Spikes(game, x, y, frame) {  
 	Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
-
+	this.scale.setTo(0.2,0.2);
 	var struck = false;
+	this.z = 1;
 
 	};
 
