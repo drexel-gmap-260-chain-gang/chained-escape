@@ -77,6 +77,7 @@ window.onload = function() {
 		splitText = game.add.text(10, 770, 'Distance to fork: 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
 		spriteLayers['HUD'].add(splitText)
 
+
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
@@ -257,7 +258,7 @@ window.onload = function() {
 		timeToSplit--;
 		
 		// update text
-		testText.text = 'Chain health: ' + chainHealth;
+		
 		splitText.text = 'Distance to fork: ' + Math.max(timeToSplit, 0);
 		
 		// check for time-based events
@@ -281,6 +282,7 @@ window.onload = function() {
 	function checkForChainYank() {
 		var p1Vel = Math.round(playerBikes.player1.body.velocity.x)
 		var p2Vel = Math.round(playerBikes.player2.body.velocity.x)
+		testText.text = 'Velocities: ' + p1Vel + "   " + p2Vel;
 		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
 		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"]))) {
 			if (p1Vel === 0 && p2Vel === 0 && timeBeforeNextChainYankAllowed <= 0) {
