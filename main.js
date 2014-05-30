@@ -349,7 +349,7 @@ window.onload = function() {
 			this.ticks = 0;
 		}
 			
-		testText.text = 'Velocities: ' + this.ticks + "   " + this.currentX + "   " + chainHealth;
+		testText.text = 'Unused: ' + this.ticks + ", Players X distance: " + this.currentX + ", chain health: " + chainHealth;
 	}
 	
 	function changeToBackground(backgroundName) {
