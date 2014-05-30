@@ -37,9 +37,9 @@ window.onload = function() {
 	
 	
 	function preload() {
-		game.load.image('backgroundCountry', 'images/road-country-scaled.png');
+		game.load.image('backgroundCountry', 'images/road-country.png');
 		game.load.image('backgroundPrison', 'images/road-prison.png');
-		game.load.image('backgroundHighway', 'images/road-highway-scaled.png');
+		game.load.image('backgroundHighway', 'images/road-highway.png');
 		game.load.image('bike-1', 'images/motorbike-1.png');
 		game.load.image('bike-2', 'images/motorbike-2.png');
 		game.load.image('chain-link-1', 'images/chainLink1.png');
@@ -57,11 +57,7 @@ window.onload = function() {
 		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'playerBike', 'HUD']);
 		
 		game.stage.backgroundColor = "#404040";
-		var backgroundHeight = game.cache.getImage('backgroundPrison').height;
-		backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundPrison');
-		spriteLayers['background'].add(backgroundSprites.background1);
-		backgroundSprites.background2 = game.add.sprite(0, -backgroundHeight, 'backgroundPrison');
-		spriteLayers['background'].add(backgroundSprites.background2);
+		changeToBackground('backgroundPrison');
 		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 150, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 125, game.world.centerY, 'bike-1');
@@ -297,9 +293,16 @@ window.onload = function() {
 	}
 	
 	function changeToBackground(backgroundName) {
-		var backgroundHeight = game.cache.getImage(backgroundName).height;
+		var backgroundNativeWidth = game.cache.getImage(backgroundName).width;
+		var backgroundNativeHeight = game.cache.getImage(backgroundName).height;
+		var backgroundScale = game.width / backgroundNativeWidth;
+		var backgroundWidth = backgroundNativeWidth * backgroundScale;
+		var backgroundHeight = backgroundNativeHeight * backgroundScale;
+		
 		backgroundSprites.background1 = game.add.sprite(0, 0, backgroundName);
+		backgroundSprites.background1.scale.setTo(backgroundScale, backgroundScale);
 		backgroundSprites.background2 = game.add.sprite(0, -backgroundHeight, backgroundName);
+		backgroundSprites.background2.scale.setTo(backgroundScale, backgroundScale);
 		spriteLayers['background'].removeAll(true);
 		spriteLayers['background'].add(backgroundSprites.background1);
 		spriteLayers['background'].add(backgroundSprites.background2);
