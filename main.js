@@ -241,8 +241,12 @@ window.onload = function() {
 		// make objects spawn, move, and interact
 		possiblySpawnRandomObstacle();
 		scrollBackground();
-		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
-		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
+		moveBikeWithKeys(playerBikes.player1, keymaps.player1);
+		moveBikeWithKeys(playerBikes.player2, keymaps.player2);
+		_.each(playerBikes, function(bike) {
+			// TODO do to police bikes too when they move sideways after the player
+			rotateBikeToShowSideMovement(bike);
+		});
 		checkForChainYank();
 		
 		// update variables
@@ -263,6 +267,13 @@ window.onload = function() {
 			// TODO show crashing animation
 			loseTheGame();
 		}
+	}
+	
+	function rotateBikeToShowSideMovement(bikeSprite) {
+		var angle = -bikeSprite.body.velocity.x / 6;
+		bikeSprite.body.angle = angle; // physics body angle
+		// when fixedRotation is on, the physics angle does not affect the visual angle
+		bikeSprite.angle = angle; // visual angle
 	}
 	
 	function checkForChainYank() {
