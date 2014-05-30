@@ -63,8 +63,8 @@ window.onload = function() {
 		backgroundSprites.background2 = game.add.sprite(0, -backgroundHeight, 'backgroundPrison');
 		spriteLayers['background'].add(backgroundSprites.background2);
 		
-		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
-		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
+		playerBikes.player1 = game.add.sprite(game.world.centerX + 175, game.world.centerY, 'bike-2');
+		playerBikes.player2 = game.add.sprite(game.world.centerX - 125, game.world.centerY, 'bike-1');
 		spriteLayers['playerBike'].add(playerBikes.player1);
 		spriteLayers['playerBike'].add(playerBikes.player2);
 		
@@ -93,7 +93,7 @@ window.onload = function() {
 		
 		_.each(playerBikes, function(bike) {
 			// sprites are too big; scale images down
-			bike.scale.setTo(0.6, 0.6);
+			bike.scale.setTo(0.4, 0.4);
 			
 			game.physics.p2.enable(bike, false);
 			// hack to counteract weight of chain:
@@ -113,7 +113,7 @@ window.onload = function() {
 		});
 		
 		forces = 0; // currently unused
-		createChain(15, playerBikes.player1, playerBikes.player2);
+		createChain(13, playerBikes.player1, playerBikes.player2);
 		
 		sounds.defeatSound = game.add.audio('defeat');
 		sounds.gameplayMusicStart = game.add.audio('gameplay-start');
@@ -195,7 +195,7 @@ window.onload = function() {
 	}
 	
 	function createChain(length, startSprite, endSprite) {
-		var lastRect; // if we created our first rect this will contain it
+		var previousChainSprite; // if we created our first link this will contain it
 		var xLimit = Math.abs(startSprite.x - endSprite.x);
 		var xInterval = xLimit / length;
 		var yLimit = Math.abs(startSprite.y - endSprite.y);
@@ -204,38 +204,43 @@ window.onload = function() {
 		
 		var chainLinkCollisionGroup = game.physics.p2.createCollisionGroup();
 		
-		var height = 20; // height for the physics body - your image height is 8px
-		var width = 16; // this is the width for the physics body… if too small the rectangles will get scrambled together
-		var maxForce = 20000; // the force that holds the rectangles together
+		var maxForce = 100000; // the force that holds the rectangles together
 		for (var i=0; i<=length; i++) {
 			var x = xAnchor-(i*xInterval); // creat chain links from right to left
 			var y = yAnchor;
 			if (i%2 === 0) {
-				newRect = game.add.sprite(x, y, 'chain-link-2', undefined, spriteLayers['chain']);
+				newChainSprite = game.add.sprite(x, y, 'chain-link-2', undefined, spriteLayers['chain']);
 			} else {
-				newRect = game.add.sprite(x, y, 'chain-link-1', undefined, spriteLayers['chain']);
-				lastRect.bringToTop(); // sideways chains appear to cover head-on ones
+				newChainSprite = game.add.sprite(x, y, 'chain-link-1', undefined, spriteLayers['chain']);
+				previousChainSprite.bringToTop(); // sideways chains appear to cover head-on ones
 			}
-			game.physics.p2.enable(newRect, false); // enable physicsbody
-			newRect.body.angle = 90;
-			newRect.body.setRectangle(width, height); // set custom rectangle
-			newRect.body.setCollisionGroup(chainLinkCollisionGroup);
-			newRect.body.collides([chainLinkCollisionGroup]);
-			newRect.body.collideWorldBounds = false;
+			
+			// if chain is too small, it jitters for some reason
+			var chainScale = 0.6;
+			var chainDistance = 6;
+			var scaleOfPhysicsRectangle = 1.0;
+			
+			game.physics.p2.enable(newChainSprite, false); // enable physics body
+			newChainSprite.scale.setTo(chainScale, chainScale);
+			newChainSprite.body.setRectangle(newChainSprite.width * scaleOfPhysicsRectangle, newChainSprite.height * scaleOfPhysicsRectangle);
+			newChainSprite.body.angle = 90;
+			newChainSprite.body.setCollisionGroup(chainLinkCollisionGroup);
+			newChainSprite.body.collides([chainLinkCollisionGroup]);
+			newChainSprite.body.collideWorldBounds = false;
 			
 			if (i === 0) {
-				game.physics.p2.createLockConstraint(newRect, startSprite, [0,10], maxForce);
+				game.physics.p2.createLockConstraint(newChainSprite, startSprite, [0,chainDistance], maxForce);
 				// anchor the first one created
 			} else {
-				newRect.body.mass = 2; // reduce mass for every chain link
+				newChainSprite.body.mass = 2; // reduce mass for every chain link
 			}
-			// after the first rectangle is created we can add the constraint
-			if (lastRect) {
-				game.physics.p2.createRevoluteConstraint(newRect, [0,-10], lastRect, [0,10], maxForce);
+			// after the first link is created we can add the constraint
+			if (previousChainSprite) {
+				game.physics.p2.createRevoluteConstraint(newChainSprite, [0,-chainDistance], previousChainSprite, [0,chainDistance], maxForce);
 			}
-			lastRect = newRect;
+			previousChainSprite = newChainSprite;
 			if (i === length) {
-				game.physics.p2.createLockConstraint(newRect, endSprite, [0,10], maxForce);
+				game.physics.p2.createLockConstraint(newChainSprite, endSprite, [0,chainDistance], maxForce);
 			}
 		}
 	}
@@ -389,7 +394,7 @@ window.onload = function() {
 	function Spikes(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
 		this.verticalSpeed = roadScrollSpeed;
-		this.scale.setTo(0.6, 0.6)
+		this.scale.setTo(0.4, 0.4)
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
@@ -405,7 +410,7 @@ window.onload = function() {
 	function Barrier(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'barrier', frame);
 		this.verticalSpeed = roadScrollSpeed;
-		this.scale.setTo(0.6, 0.6)
+		this.scale.setTo(0.4, 0.4)
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
@@ -419,7 +424,7 @@ window.onload = function() {
 	
 	function Pole(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'pole', frame);
-		this.scale.setTo(0.6, 0.6)
+		this.scale.setTo(0.4, 0.4)
 		this.verticalSpeed = roadScrollSpeed;
 	};
 	
@@ -433,7 +438,7 @@ window.onload = function() {
 	
 	function Police(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'police', frame);
-		this.scale.setTo(0.6, 0.6)
+		this.scale.setTo(0.4, 0.4)
 		this.verticalSpeed = roadScrollSpeed - 5;
 	};
 	
