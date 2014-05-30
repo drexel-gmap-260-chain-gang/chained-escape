@@ -81,7 +81,7 @@ window.onload = function() {
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
 		timeBeforeNextChainYankAllowed = 0;
-		timeBeforeNextSpawnAllowed = 100;
+		timeBeforeNextSpawnAllowed = 100; // give player time to get their bearings at game start
 		timeToSplit = 5000;
 		
 		//game.world.boundsCollidesWith
@@ -248,7 +248,7 @@ window.onload = function() {
 		// update variables
 		timeBeforeNextChainYankAllowed = Math.max(timeBeforeNextChainYankAllowed - 1, 0);
 		timeBeforeNextSpawnAllowed = Math.max(timeBeforeNextSpawnAllowed - 1, 0);
-		timeToSplit--;
+		timeToSplit = Math.max(timeToSplit - 1, 0);
 		
 		// update text
 		testText.text = 'Chain health: ' + chainHealth;
@@ -291,8 +291,8 @@ window.onload = function() {
 		if (timeBeforeNextSpawnAllowed > 0) {
 			return;
 		}
-		if (Math.random() < 0.01) {
-			var spawnType = Math.floor((Math.random() * 4) + 1);
+		if (Math.random() < 0.02) {
+			var spawnType = randomIntInRangeInclusive(1, 4);
 			switch (spawnType) {
 			case 1:
 				spawnSpikes();
@@ -309,7 +309,11 @@ window.onload = function() {
 			}
 		}
 	}
-		
+	
+	function randomIntInRangeInclusive(minimum, maximum) {
+		return Math.floor((Math.random() * (maximum - minimum + 1))) + minimum;
+	}
+	
 	function scrollBackground() {
 		moveBackgroundSprite(backgroundSprites.background1);
 		moveBackgroundSprite(backgroundSprites.background2);
@@ -339,7 +343,7 @@ window.onload = function() {
 	}
 	
 	function spawnObstacle(constructor) {
-		var spawnX = Math.floor((Math.random() * 400) + 201);
+		var spawnX = randomIntInRangeInclusive(200, 400);
 		var spawnY = -100; // FIXME should be negative the height of the obstacle
 		var obstacle = new constructor(game, spawnX, spawnY);
 		
@@ -348,18 +352,22 @@ window.onload = function() {
 	
 	function spawnSpikes() {
 		spawnObstacle(Spikes);
+		timeBeforeNextSpawnAllowed = 100;
 	}
 	
 	function spawnBarrier() {
 		spawnObstacle(Barrier);
+		timeBeforeNextSpawnAllowed = 100;
 	}
 	
 	function spawnPole() {
 		spawnObstacle(Pole);
+		timeBeforeNextSpawnAllowed = 100;
 	}
 	
 	function spawnPolice() {
 		spawnObstacle(Police);
+		timeBeforeNextSpawnAllowed = 300;
 	}
 	
 	
