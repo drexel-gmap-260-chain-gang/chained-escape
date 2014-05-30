@@ -84,8 +84,10 @@ window.onload = function() {
 		timeBeforeNextSpawnAllowed = 100; // give player time to get their bearings at game start
 		timeToSplit = 5000;
 		
-		//game.world.boundsCollidesWith
-		game.physics.p2.setBounds(0, 0, 600, 800, true, true, true, true, true);
+		var leftWallX = 125;
+		var rightWallX = 475;
+		var widthOfRoad = rightWallX - leftWallX;
+		game.physics.p2.setBounds(leftWallX, 0, widthOfRoad, 800, true, true, true, true, true);
 		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
 		
 		_.each(playerBikes, function(bike) {
