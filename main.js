@@ -365,9 +365,8 @@ window.onload = function() {
 	
 	function Spikes(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
-		this.setX = x;
 		this.verticalSpeed = roadScrollSpeed;
-		this.scale.setTo(0.6,0.6)
+		this.scale.setTo(0.6, 0.6)
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
@@ -382,9 +381,8 @@ window.onload = function() {
 	
 	function Barrier(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'barrier', frame);
-		this.setX = x;
 		this.verticalSpeed = roadScrollSpeed;
-		this.scale.setTo(0.6,0.6)
+		this.scale.setTo(0.6, 0.6)
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
@@ -393,15 +391,12 @@ window.onload = function() {
 	
 	Barrier.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		this.x = this.setX;
 	};
 	
 	
 	function Pole(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'pole', frame);
-		this.setX = x;
-		this.scale.setTo(0.6,0.6)
-		var struck = false;
+		this.scale.setTo(0.6, 0.6)
 		this.verticalSpeed = roadScrollSpeed;
 	};
 	
@@ -410,15 +405,12 @@ window.onload = function() {
 	
 	Pole.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		this.x = this.setX;
 	};
 	
 	
 	function Police(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'police', frame);
-		this.setX = x;
-		this.scale.setTo(0.6,0.6)
-		var struck = false;
+		this.scale.setTo(0.6, 0.6)
 		this.verticalSpeed = roadScrollSpeed - 5;
 	};
 	
@@ -427,6 +419,5 @@ window.onload = function() {
 	
 	Police.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		this.x = this.setX;
 	};
 };
