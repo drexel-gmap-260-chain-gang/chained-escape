@@ -305,7 +305,7 @@ window.onload = function() {
 			{
 				this.xticks++;
 				this.lastX = this.currentX;
-				if (dist > 189 && this.xticks > 16) {
+				if (dist > 179 && this.xticks > 16) {
 					testText.text = 'kerCHINK!';
 					timeBeforeNextChainYankAllowed = 50;
 					chainHealth = chainHealth - 1;
@@ -330,7 +330,7 @@ window.onload = function() {
 			{
 				this.yticks++;
 				this.lastY = this.currentY;
-				if (dist > 189 && this.yticks > 16) {
+				if (dist > 179 && this.yticks > 16) {
 					testText.text = 'kerCHINK!';
 					timeBeforeNextChainYankAllowed = 50;
 					chainHealth = chainHealth - 1;
