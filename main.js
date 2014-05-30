@@ -252,11 +252,11 @@ window.onload = function() {
 		// update variables
 		timeBeforeNextChainYankAllowed = Math.max(timeBeforeNextChainYankAllowed - 1, 0);
 		timeBeforeNextSpawnAllowed = Math.max(timeBeforeNextSpawnAllowed - 1, 0);
-		timeToSplit = Math.max(timeToSplit - 1, 0);
+		timeToSplit--;
 		
 		// update text
 		testText.text = 'Chain health: ' + chainHealth;
-		splitText.text = 'Distance to fork: ' + timeToSplit;
+		splitText.text = 'Distance to fork: ' + Math.max(timeToSplit, 0);
 		
 		// check for time-based events
 		if (timeToSplit === 3000) {
