@@ -75,7 +75,7 @@ window.onload = function() {
 
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
-		chainHealth = 10;
+		chainHealth = 50;
 		timeBeforeNextChainYankAllowed = 0;
 		timeBeforeNextSpawnAllowed = 100; // give player time to get their bearings at game start
 		timeToSplit = 5000;
@@ -312,7 +312,8 @@ window.onload = function() {
 		if (timeBeforeNextSpawnAllowed > 0) {
 			return;
 		}
-		if (Math.random() < 0.02) {
+		var spawnChancePerFrame = 0.05;
+		if (Math.random() < spawnChancePerFrame) {
 			var spawnType = randomIntInRangeInclusive(1, 4);
 			switch (spawnType) {
 			case 1:
