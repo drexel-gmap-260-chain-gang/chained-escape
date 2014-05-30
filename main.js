@@ -207,7 +207,7 @@ window.onload = function() {
 		for (var i=0; i<=length; i++) {
 			var x = xAnchor-(i*xInterval); // creat chain links from right to left
 			var y = yAnchor;
-			if (i%2 == 0) {
+			if (i%2 === 0) {
 				newRect = game.add.sprite(x, y, 'chain-link-2', undefined, spriteLayers['chain']);
 			} else {
 				newRect = game.add.sprite(x, y, 'chain-link-1', undefined, spriteLayers['chain']);
@@ -220,7 +220,7 @@ window.onload = function() {
 			newRect.body.collides([chainLinkCollisionGroup]);
 			newRect.body.collideWorldBounds = false;
 			
-			if (i == 0) {
+			if (i === 0) {
 				game.physics.p2.createLockConstraint(newRect, startSprite, [0,10], maxForce);
 				// anchor the first one created
 			} else {
@@ -231,7 +231,7 @@ window.onload = function() {
 				game.physics.p2.createRevoluteConstraint(newRect, [0,-10], lastRect, [0,10], maxForce);
 			}
 			lastRect = newRect;
-			if (i == length) {
+			if (i === length) {
 				game.physics.p2.createLockConstraint(newRect, endSprite, [0,10], maxForce);
 			}
 		}
@@ -255,11 +255,11 @@ window.onload = function() {
 		splitText.text = 'Distance to fork: ' + timeToSplit;
 		
 		// check for time-based events
-		if (timeToSplit == 3000) {
+		if (timeToSplit === 3000) {
 			changeToBackground('backgroundCountry');
-		} else if (timeToSplit == 1000) {
+		} else if (timeToSplit === 1000) {
 			changeToBackground('backgroundHighway');
-		} else if (timeToSplit == 0 && chainHealth > 0) {
+		} else if (timeToSplit === 0 && chainHealth > 0) {
 			// TODO show crashing animation
 			loseTheGame();
 		}
