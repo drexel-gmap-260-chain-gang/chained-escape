@@ -235,17 +235,22 @@ window.onload = function() {
 	}
 	
 	function update() {
-		testText.text = 'Chain health: ' + chainHealth;
+		// make objects spawn, move, and interact
 		possiblySpawnRandomObstacle();
-		
 		scrollBackground();
-		
-		chainCooldown++;
-		timeToSplit--;
-		splitText.text = 'Distance to fork: ' + timeToSplit;
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
+		checkForChainYank();
 		
+		// update variables
+		chainCooldown++;
+		timeToSplit--;
+		
+		// update text
+		testText.text = 'Chain health: ' + chainHealth;
+		splitText.text = 'Distance to fork: ' + timeToSplit;
+		
+		// check for time-based events
 		if (timeToSplit == 3000) {
 			changeToBackground('backgroundCountry');
 		} else if (timeToSplit == 1000) {
@@ -254,7 +259,9 @@ window.onload = function() {
 			// TODO show crashing animation
 			loseTheGame();
 		}
-		
+	}
+	
+	function checkForChainYank() {
 		var p1Vel = Math.round(playerBikes.player1.body.velocity.x)
 		var p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
