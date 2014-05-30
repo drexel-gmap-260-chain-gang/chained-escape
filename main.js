@@ -1,8 +1,11 @@
 window.onload = function() {
 	var game = new Phaser.Game(600, 800, Phaser.AUTO, 'game-area', { preload: preload, create: create, update: update });
 	
+	// global variables:
+	
 	var bikeHorizSpeed = 500;
 	var bikeVertSpeed = 500;
+	var roadScrollSpeed = 10;
 	
 	var playerBikes = {};
 	var backgroundSprites = {};
@@ -10,7 +13,10 @@ window.onload = function() {
 	var forces;
 	var timeToSplit;
 	var chainHealth, chainCooldown;
+<<<<<<< HEAD
 	var spawnVal, spawnCooldown;
+=======
+>>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 	var spriteLayers = {};
 	
 	var keymaps = {
@@ -30,6 +36,7 @@ window.onload = function() {
 	
 	var music; // whatever music is currently playing
 	var sounds = {};
+	
 	
 	function preload() {
 		game.load.image('backgroundCountry', 'images/road-country-scaled.png');
@@ -52,18 +59,16 @@ window.onload = function() {
 		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'playerBike', 'HUD']);
 		
 		game.stage.backgroundColor = "#404040";
+		var backgroundHeight = game.cache.getImage('backgroundPrison').height;
 		backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundPrison');
 		spriteLayers['background'].add(backgroundSprites.background1);
-		backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundPrison');
+		backgroundSprites.background2 = game.add.sprite(0, -backgroundHeight, 'backgroundPrison');
 		spriteLayers['background'].add(backgroundSprites.background2);
 		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 200, game.world.centerY, 'bike-1');
 		spriteLayers['playerBike'].add(playerBikes.player1);
 		spriteLayers['playerBike'].add(playerBikes.player2);
-		
-		
-		
 		
 		
 		var spikes = new Spikes(game, 200, -100);
@@ -85,7 +90,7 @@ window.onload = function() {
 		game.physics.p2.setBounds(0, 0, 600, 800, true, true, true, true, true);
 		var bikeCollisionGroup = game.physics.p2.createCollisionGroup();
 		
-		/*_.each(playerBikes, function(bike) {
+		_.each(playerBikes, function(bike) {
 			// sprites are too big; scale images down
 			bike.scale.setTo(0.6, 0.6);
 			
@@ -98,35 +103,7 @@ window.onload = function() {
 			
 			bike.body.data.mass = 100;
 			bike.body.fixedRotation = true;
-			frontLayer.add(bike);
-		})*/
-		
-		playerBikes.player1.scale.setTo(0.6, 0.6);
-			
-			game.physics.p2.enable(playerBikes.player1, false);
-			// hack to counteract weight of chain:
-			playerBikes.player1.body.data.gravityScale = -0.155;
-			
-			playerBikes.player1.body.setCollisionGroup(bikeCollisionGroup);
-			playerBikes.player1.body.collides([bikeCollisionGroup]);
-			
-			playerBikes.player1.body.data.mass = 100;
-			playerBikes.player1.body.fixedRotation = true;
-			//frontLayer.add(playerBikes.player1);
-				
-			playerBikes.player2.scale.setTo(0.6, 0.6);
-			
-			game.physics.p2.enable(playerBikes.player2, false);
-			// hack to counteract weight of chain:
-			playerBikes.player2.body.data.gravityScale = -0.155;
-			
-			playerBikes.player2.body.setCollisionGroup(bikeCollisionGroup);
-			playerBikes.player2.body.collides([bikeCollisionGroup]);
-			
-			playerBikes.player2.body.data.mass = 100;
-			playerBikes.player2.body.fixedRotation = true;
-			//frontLayer.add(playerBikes.player2);
-			
+		})
 			
 		_.each(keymaps, function(keymap) {
 			_.each(keymap, function(keyCode, direction) {
@@ -180,6 +157,7 @@ window.onload = function() {
 		music.play(undefined, undefined, undefined, shouldLoop, true);
 	}
 	
+<<<<<<< HEAD
 	function makeSpikes()
 	{
 		spawnX = Math.floor((Math.random() * 400) + 201);
@@ -270,6 +248,8 @@ window.onload = function() {
 			spriteLayers['obstacle'].add(police);
 	}
 	
+=======
+>>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 	// play the first sound once, followed by the second sound looping forever
 	function playTwoPartLoopingMusic(startSound, loopingSound) {
 		if (music !== undefined) {
@@ -354,29 +334,10 @@ window.onload = function() {
 	
 	function update() {
 		testText.text = 'Chain health: ' + chainHealth;
-		spawnVal = Math.floor((Math.random() * 100) + 1);
-		spawnType = Math.floor((Math.random() * 4) + 1);
-		if (spawnVal == 100 && spawnCooldown >= 10)
-		{
-			switch (spawnType) {
-			case 1:
-				makeSpikes();
-				spawnCooldown = 0;
-				break;
-			case 2:
-				makeBarrier();
-				spawnCooldown = 0;
-				break;
-			case 3:
-				makePole();
-				spawnCooldown = 0;
-				break;
-			case 4:
-				makePolice();
-				spawnCooldown = 0;
-				break;
-			}
-		}
+		possiblySpawnRandomObstacle();
+		
+		scrollBackground();
+		
 		chainCooldown++;
 		spawnCooldown++;
 		timeToSplit--;
@@ -385,17 +346,9 @@ window.onload = function() {
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
 		
 		if (timeToSplit == 3000) {
-			backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundCountry');
-			backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundCountry');
-			spriteLayers['background'].removeAll(true);
-			spriteLayers['background'].add(backgroundSprites.background1);
-			spriteLayers['background'].add(backgroundSprites.background2);
+			changeToBackground('backgroundCountry');
 		} else if (timeToSplit == 1000) {
-			backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundHighway');
-			backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundHighway');
-			spriteLayers['background'].removeAll(true);
-			spriteLayers['background'].add(backgroundSprites.background1);
-			spriteLayers['background'].add(backgroundSprites.background2);
+			changeToBackground('backgroundHighway');
 		} else if (timeToSplit == 0 && chainHealth > 0) {
 			// TODO show crashing animation
 			loseTheGame();
@@ -412,17 +365,48 @@ window.onload = function() {
 			}
 		}
 	}
-		
-	function moveBackground(background) {
-		if (background.y > 780) {
-			background.y = -800;
-			background.y += 20;
-		} else {
-			background.y += 20;
+	
+	function changeToBackground(backgroundName) {
+		var backgroundHeight = game.cache.getImage(backgroundName).height;
+		backgroundSprites.background1 = game.add.sprite(0, 0, backgroundName);
+		backgroundSprites.background2 = game.add.sprite(0, -backgroundHeight, backgroundName);
+		spriteLayers['background'].removeAll(true);
+		spriteLayers['background'].add(backgroundSprites.background1);
+		spriteLayers['background'].add(backgroundSprites.background2);
+	}
+	
+	function possiblySpawnRandomObstacle() {
+		var spawnVal = Math.floor((Math.random() * 100) + 1);
+		var spawnType = Math.floor((Math.random() * 4) + 1);
+		if (spawnVal == 100) {
+			switch (spawnType) {
+			case 1:
+				spawnSpikes();
+				break;
+			case 2:
+				spawnBarrier();
+				break;
+			case 3:
+				spawnPole();
+				break;
+			case 4:
+				spawnPolice();
+				break;
+			}
 		}
+	}
 		
-		moveBackground(backgroundSprites.background1);
-		moveBackground(backgroundSprites.background2);
+	function scrollBackground() {
+		moveBackgroundSprite(backgroundSprites.background1);
+		moveBackgroundSprite(backgroundSprites.background2);
+	}
+	
+	function moveBackgroundSprite(backgroundSprite) {
+		backgroundSprite.y += roadScrollSpeed;
+		if (backgroundSprite.y >= game.height) {
+			backgroundSprite.y -= backgroundSprite.height * 2;
+			// * 2 to leapfrog over the single other background sprite
+		}
 	}
 	
 	function moveBikeWithKeys(sprite, keymap) {
@@ -440,12 +424,41 @@ window.onload = function() {
 		}
 	}
 	
+	function spawnObstacle(constructor) {
+		var spawnX = Math.floor((Math.random() * 400) + 201);
+		var spawnY = -100; // FIXME should be negative the height of the obstacle
+		var obstacle = new constructor(game, spawnX, spawnY);
+		
+		spriteLayers['obstacle'].add(obstacle);
+	}
+	
+	function spawnSpikes() {
+		spawnObstacle(Spikes);
+	}
+	
+	function spawnBarrier() {
+		spawnObstacle(Barrier);
+	}
+	
+	function spawnPole() {
+		spawnObstacle(Pole);
+	}
+	
+	function spawnPolice() {
+		spawnObstacle(Police);
+	}
+	
+	
 	function Spikes(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
+<<<<<<< HEAD
 		this.verticalSpeed = 5;
 		this.setX = x;
+=======
+		this.verticalSpeed = roadScrollSpeed;
+>>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 		
-		var struck = false;
+		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
 	Spikes.prototype = Object.create(Phaser.Sprite.prototype);
@@ -456,12 +469,17 @@ window.onload = function() {
 		this.x = this.setX;
 	};
 	
+	
 	function Barrier(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'barrier', frame);
+<<<<<<< HEAD
 		this.verticalSpeed = 5;
 		this.setX = x;
+=======
+		this.verticalSpeed = roadScrollSpeed;
+>>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 		
-		var struck = false;
+		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
 	Barrier.prototype = Object.create(Phaser.Sprite.prototype);
@@ -472,12 +490,17 @@ window.onload = function() {
 		this.x = this.setX;
 	};
 	
+	
 	function Pole(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'pole', frame);
+<<<<<<< HEAD
 		this.verticalSpeed = 5;
 		this.setX = x;
 		
 		var struck = false;
+=======
+		this.verticalSpeed = roadScrollSpeed;
+>>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 	};
 	
 	Pole.prototype = Object.create(Phaser.Sprite.prototype);
@@ -488,12 +511,17 @@ window.onload = function() {
 		this.x = this.setX;
 	};
 	
+	
 	function Police(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'police', frame);
+<<<<<<< HEAD
 		this.verticalSpeed = 5;
 		this.setX = x;
 		
 		var struck = false;
+=======
+		this.verticalSpeed = roadScrollSpeed - 5;
+>>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 	};
 	
 	Police.prototype = Object.create(Phaser.Sprite.prototype);
@@ -504,4 +532,3 @@ window.onload = function() {
 		this.x = this.setX;
 	};
 };
-
