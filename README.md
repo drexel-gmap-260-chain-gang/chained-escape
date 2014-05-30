@@ -8,6 +8,8 @@ A game for the class GMAP 260 at Drexel University, by the six-person group “C
 
 A 2D top-down action game where your motorbikes are chained together. Runs in the browser, using the [Phaser](http://phaser.io/) game library.
 
+Code released under the [MIT License](http://opensource.org/licenses/MIT). For non-code assets like images and sounds, all rights are reserved.
+
 ## Links for the team
 
 - Our **[issue backlog](https://waffle.io/drexel-gmap-260-chain-gang/chained-escape)**
