@@ -13,10 +13,6 @@ window.onload = function() {
 	var forces;
 	var timeToSplit;
 	var chainHealth, chainCooldown;
-<<<<<<< HEAD
-	var spawnVal, spawnCooldown;
-=======
->>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 	var spriteLayers = {};
 	
 	var keymaps = {
@@ -157,99 +153,6 @@ window.onload = function() {
 		music.play(undefined, undefined, undefined, shouldLoop, true);
 	}
 	
-<<<<<<< HEAD
-	function makeSpikes()
-	{
-		spawnX = Math.floor((Math.random() * 400) + 201);
-		spawnY = Math.floor((Math.random() * 400) + 201);
-		var spikes = new Spikes(game, spawnX, -100);
-		
-		// sprites are too big; scale images down
-			//spikes.scale.setTo(0.6, 0.6);
-			
-			
-			game.physics.p2.enable(spikes, false);
-			spikes.body.data.gravityScale = 0;
-			spikes.scale.setTo(0.4, 0.4);
-			// hack to counteract weight of chain:
-			
-			//spikes.body.setCollisionGroup(bikeCollisionGroup);
-			//spikes.body.collides([bikeCollisionGroup]);
-			
-			spikes.body.data.mass = 100;
-			spikes.body.fixedRotation = true;
-			spriteLayers['obstacle'].add(spikes);
-			game.add.existing(spikes);
-	}
-	
-	function makeBarrier()
-	{
-		spawnX = Math.floor((Math.random() * 400) + 201);
-		spawnY = Math.floor((Math.random() * 400) + 201);
-		var barrier = new Barrier(game, spawnX, -100);
-		
-		// sprites are too big; scale images down
-			//barrier.scale.setTo(0.6, 0.6);
-			
-			game.physics.p2.enable(barrier, false);
-			barrier.body.data.gravityScale = 0;
-			barrier.scale.setTo(0.4, 0.4);
-			// hack to counteract weight of chain:
-			
-			//barrier.body.setCollisionGroup(bikeCollisionGroup);
-			//barrier.body.collides([bikeCollisionGroup]);
-			
-			barrier.body.data.mass = 100;
-			barrier.body.fixedRotation = true;
-			spriteLayers['obstacle'].add(barrier);
-	}
-	
-	function makePole()
-	{
-		spawnX = Math.floor((Math.random() * 400) + 201);
-		spawnY = Math.floor((Math.random() * 400) + 201);
-		var pole = new Pole(game, 400, -100);
-		
-		// sprites are too big; scale images down
-			//pole.scale.setTo(0.6, 0.6);
-			
-			game.physics.p2.enable(pole, false);
-			pole.body.data.gravityScale = 0;
-			pole.scale.setTo(0.4, 0.4);
-			// hack to counteract weight of chain:
-			
-			//pole.body.setCollisionGroup(bikeCollisionGroup);
-			//pole.body.collides([bikeCollisionGroup]);
-			
-			pole.body.data.mass = 100;
-			pole.body.fixedRotation = true;
-			spriteLayers['obstacle'].add(pole);
-	}
-	
-	function makePolice()
-	{
-		spawnX = Math.floor((Math.random() * 400) + 201);
-		spawnY = Math.floor((Math.random() * 400) + 201);
-		var police = new Police(game, spawnX, -100);
-		
-		// sprites are too big; scale images down
-			//spikes.scale.setTo(0.6, 0.6);
-			
-			game.physics.p2.enable(police, false);
-			police.body.data.gravityScale = 0;
-			police.scale.setTo(0.6, 0.6);
-			// hack to counteract weight of chain:
-			
-			//police.body.setCollisionGroup(bikeCollisionGroup);
-			//police.body.collides([bikeCollisionGroup]);
-			
-			police.body.data.mass = 100;
-			police.body.fixedRotation = true;
-			spriteLayers['obstacle'].add(police);
-	}
-	
-=======
->>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 	// play the first sound once, followed by the second sound looping forever
 	function playTwoPartLoopingMusic(startSound, loopingSound) {
 		if (music !== undefined) {
@@ -451,13 +354,9 @@ window.onload = function() {
 	
 	function Spikes(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
-<<<<<<< HEAD
-		this.verticalSpeed = 5;
 		this.setX = x;
-=======
 		this.verticalSpeed = roadScrollSpeed;
->>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
-		
+		this.scale.setTo(0.6,0.6)
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
@@ -472,13 +371,9 @@ window.onload = function() {
 	
 	function Barrier(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'barrier', frame);
-<<<<<<< HEAD
-		this.verticalSpeed = 5;
 		this.setX = x;
-=======
 		this.verticalSpeed = roadScrollSpeed;
->>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
-		
+		this.scale.setTo(0.6,0.6)
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
@@ -493,14 +388,10 @@ window.onload = function() {
 	
 	function Pole(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'pole', frame);
-<<<<<<< HEAD
-		this.verticalSpeed = 5;
 		this.setX = x;
-		
+		this.scale.setTo(0.6,0.6)
 		var struck = false;
-=======
 		this.verticalSpeed = roadScrollSpeed;
->>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 	};
 	
 	Pole.prototype = Object.create(Phaser.Sprite.prototype);
@@ -514,14 +405,10 @@ window.onload = function() {
 	
 	function Police(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'police', frame);
-<<<<<<< HEAD
-		this.verticalSpeed = 5;
 		this.setX = x;
-		
+		this.scale.setTo(0.6,0.6)
 		var struck = false;
-=======
 		this.verticalSpeed = roadScrollSpeed - 5;
->>>>>>> 4f051ed7c00f5b834381492ff2359067ad2b22d6
 	};
 	
 	Police.prototype = Object.create(Phaser.Sprite.prototype);
