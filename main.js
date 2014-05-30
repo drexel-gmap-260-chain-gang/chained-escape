@@ -296,23 +296,33 @@ window.onload = function() {
 		var dist = Math.sqrt((diffX*diffX) + (diffY*diffY));
 		this.currentX = diffX;
 		this.currentY = diffY;
-		testText.text = 'Velocities: ' + diffX + "   " + diffY + "   " + dist;
-		if (this.currentX > 100)
+		
+		if (this.currentX > 70)
 		{
 			if (this.lastX == null || this.currentX > this.lastX)
 			{
 				this.ticks++;
 				this.lastX = this.currentX;
-				if (dist > 189 && ticks > 50) {
+				if (dist > 189 && ticks > 16) {
 					testText.text = 'kerCHINK!';
 					timeBeforeNextChainYankAllowed = 50;
 					chainHealth = chainHealth - 1;
+					this.ticks = -10;
 				}
 			}
 			else
+			{
+				this.lastX = 69;
+				this.ticks = 0;
+			}
 		}
 		else
-			this.lastX = 99;
+		{
+			this.lastX = 69;
+			this.ticks = 0;
+		}
+			
+		testText.text = 'Velocities: ' + this.ticks + "   " + this.currentX + "   " + chainHealth;
 	}
 	
 	function changeToBackground(backgroundName) {
