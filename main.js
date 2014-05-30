@@ -10,7 +10,7 @@ window.onload = function() {
 	var forces;
 	var timeToSplit;
 	var chainHealth, chainCooldown;
-	var spawnVal;
+	var spawnVal, spawnCooldown;
 	var spriteLayers = {};
 	
 	var keymaps = {
@@ -78,6 +78,7 @@ window.onload = function() {
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
 		chainCooldown = 0;
+		spawnCooldown = 0;
 		timeToSplit = 5000;
 		
 		//game.world.boundsCollidesWith
@@ -188,7 +189,10 @@ window.onload = function() {
 		// sprites are too big; scale images down
 			//spikes.scale.setTo(0.6, 0.6);
 			
+			
 			game.physics.p2.enable(spikes, false);
+			spikes.body.data.gravityScale = 0;
+			spikes.scale.setTo(0.4, 0.4);
 			// hack to counteract weight of chain:
 			
 			//spikes.body.setCollisionGroup(bikeCollisionGroup);
@@ -210,6 +214,8 @@ window.onload = function() {
 			//barrier.scale.setTo(0.6, 0.6);
 			
 			game.physics.p2.enable(barrier, false);
+			barrier.body.data.gravityScale = 0;
+			barrier.scale.setTo(0.4, 0.4);
 			// hack to counteract weight of chain:
 			
 			//barrier.body.setCollisionGroup(bikeCollisionGroup);
@@ -230,6 +236,8 @@ window.onload = function() {
 			//pole.scale.setTo(0.6, 0.6);
 			
 			game.physics.p2.enable(pole, false);
+			pole.body.data.gravityScale = 0;
+			pole.scale.setTo(0.4, 0.4);
 			// hack to counteract weight of chain:
 			
 			//pole.body.setCollisionGroup(bikeCollisionGroup);
@@ -250,6 +258,8 @@ window.onload = function() {
 			//spikes.scale.setTo(0.6, 0.6);
 			
 			game.physics.p2.enable(police, false);
+			police.body.data.gravityScale = 0;
+			police.scale.setTo(0.6, 0.6);
 			// hack to counteract weight of chain:
 			
 			//police.body.setCollisionGroup(bikeCollisionGroup);
@@ -346,24 +356,29 @@ window.onload = function() {
 		testText.text = 'Chain health: ' + chainHealth;
 		spawnVal = Math.floor((Math.random() * 100) + 1);
 		spawnType = Math.floor((Math.random() * 4) + 1);
-		if (spawnVal == 100)
+		if (spawnVal == 100 && spawnCooldown >= 10)
 		{
 			switch (spawnType) {
 			case 1:
 				makeSpikes();
+				spawnCooldown = 0;
 				break;
 			case 2:
 				makeBarrier();
+				spawnCooldown = 0;
 				break;
 			case 3:
 				makePole();
+				spawnCooldown = 0;
 				break;
 			case 4:
 				makePolice();
+				spawnCooldown = 0;
 				break;
 			}
 		}
 		chainCooldown++;
+		spawnCooldown++;
 		timeToSplit--;
 		splitText.text = 'Distance to fork: ' + timeToSplit;
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1)
@@ -428,6 +443,7 @@ window.onload = function() {
 	function Spikes(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
 		this.verticalSpeed = 5;
+		this.setX = x;
 		
 		var struck = false;
 	};
@@ -437,11 +453,13 @@ window.onload = function() {
 	
 	Spikes.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		this.x = this.setX;
 	};
 	
 	function Barrier(game, x, y, frame) {  
-		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
+		Phaser.Sprite.call(this, game, x, y, 'barrier', frame);
 		this.verticalSpeed = 5;
+		this.setX = x;
 		
 		var struck = false;
 	};
@@ -451,11 +469,13 @@ window.onload = function() {
 	
 	Barrier.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		this.x = this.setX;
 	};
 	
 	function Pole(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'pole', frame);
 		this.verticalSpeed = 5;
+		this.setX = x;
 		
 		var struck = false;
 	};
@@ -465,11 +485,13 @@ window.onload = function() {
 	
 	Pole.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		this.x = this.setX;
 	};
 	
 	function Police(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'police', frame);
 		this.verticalSpeed = 5;
+		this.setX = x;
 		
 		var struck = false;
 	};
@@ -479,6 +501,7 @@ window.onload = function() {
 	
 	Police.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		this.x = this.setX;
 	};
 };
 
