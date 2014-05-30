@@ -63,7 +63,7 @@ window.onload = function() {
 		backgroundSprites.background2 = game.add.sprite(0, -backgroundHeight, 'backgroundPrison');
 		spriteLayers['background'].add(backgroundSprites.background2);
 		
-		playerBikes.player1 = game.add.sprite(game.world.centerX + 175, game.world.centerY, 'bike-2');
+		playerBikes.player1 = game.add.sprite(game.world.centerX + 150, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 125, game.world.centerY, 'bike-1');
 		spriteLayers['playerBike'].add(playerBikes.player1);
 		spriteLayers['playerBike'].add(playerBikes.player2);
