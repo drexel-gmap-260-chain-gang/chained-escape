@@ -285,17 +285,38 @@ window.onload = function() {
 	}
 	
 	function checkForChainYank() {
-		var p1Vel = Math.round(playerBikes.player1.body.velocity.x)
-		var p2Vel = Math.round(playerBikes.player2.body.velocity.x)
-		testText.text = 'Velocities: ' + p1Vel + "   " + p2Vel;
-		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
-		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"]))) {
-			if (p1Vel === 0 && p2Vel === 0 && timeBeforeNextChainYankAllowed <= 0) {
-				testText.text = 'kerCHINK!';
-				timeBeforeNextChainYankAllowed = 50;
-				chainHealth = chainHealth - 1;
+		if (this.ticks == null)
+			this.ticks = 0;
+		if (this.lastX == null)
+			this.lastX = 0;
+		if (this.lastY == null)
+			this.lastY = 0;
+		var p1Vel = Math.round(playerBikes.player1.body.x);
+		var p2Vel = Math.round(playerBikes.player2.body.x);
+		var p1del = Math.round(playerBikes.player1.deltaX);
+		var p2del = Math.round(playerBikes.player2.deltaX);
+		var diffX = Math.abs(Math.round(playerBikes.player1.x) - Math.round(playerBikes.player2.x))
+		var diffY = Math.abs(Math.round(playerBikes.player1.y) - Math.round(playerBikes.player2.y))
+		var dist = Math.sqrt((diffX*diffX) + (diffY*diffY));
+		this.currentX = diffX;
+		this.currentY = diffY;
+		testText.text = 'Velocities: ' + diffX + "   " + diffY + "   " + dist;
+		if (this.currentX > 100)
+		{
+			if (this.lastX == null || this.currentX > this.lastX)
+			{
+				this.ticks++;
+				this.lastX = this.currentX;
+				if (dist > 189 && ticks > 50) {
+					testText.text = 'kerCHINK!';
+					timeBeforeNextChainYankAllowed = 50;
+					chainHealth = chainHealth - 1;
+				}
 			}
+			else
 		}
+		else
+			this.lastX = 99;
 	}
 	
 	function changeToBackground(backgroundName) {
