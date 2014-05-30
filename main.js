@@ -5,6 +5,7 @@ window.onload = function() {
 	
 	var bikeHorizSpeed = 500;
 	var bikeVertSpeed = 500;
+	var roadScrollSpeed = 10;
 	
 	var playerBikes = {};
 	var backgroundSprites = {};
@@ -54,9 +55,10 @@ window.onload = function() {
 		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'playerBike', 'HUD']);
 		
 		game.stage.backgroundColor = "#404040";
+		var backgroundHeight = game.cache.getImage('backgroundPrison').height;
 		backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundPrison');
 		spriteLayers['background'].add(backgroundSprites.background1);
-		backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundPrison');
+		backgroundSprites.background2 = game.add.sprite(0, -backgroundHeight, 'backgroundPrison');
 		spriteLayers['background'].add(backgroundSprites.background2);
 		
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
@@ -235,6 +237,9 @@ window.onload = function() {
 	function update() {
 		testText.text = 'Chain health: ' + chainHealth;
 		possiblySpawnRandomObstacle();
+		
+		scrollBackground();
+		
 		chainCooldown++;
 		timeToSplit--;
 		splitText.text = 'Distance to fork: ' + timeToSplit;
@@ -242,17 +247,9 @@ window.onload = function() {
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2)
 		
 		if (timeToSplit == 3000) {
-			backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundCountry');
-			backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundCountry');
-			spriteLayers['background'].removeAll(true);
-			spriteLayers['background'].add(backgroundSprites.background1);
-			spriteLayers['background'].add(backgroundSprites.background2);
+			changeToBackground('backgroundCountry');
 		} else if (timeToSplit == 1000) {
-			backgroundSprites.background1 = game.add.sprite(0, 0, 'backgroundHighway');
-			backgroundSprites.background2 = game.add.sprite(0, -800, 'backgroundHighway');
-			spriteLayers['background'].removeAll(true);
-			spriteLayers['background'].add(backgroundSprites.background1);
-			spriteLayers['background'].add(backgroundSprites.background2);
+			changeToBackground('backgroundHighway');
 		} else if (timeToSplit == 0 && chainHealth > 0) {
 			// TODO show crashing animation
 			loseTheGame();
@@ -268,6 +265,15 @@ window.onload = function() {
 				chainHealth = chainHealth - 1;
 			}
 		}
+	}
+	
+	function changeToBackground(backgroundName) {
+		var backgroundHeight = game.cache.getImage(backgroundName).height;
+		backgroundSprites.background1 = game.add.sprite(0, 0, backgroundName);
+		backgroundSprites.background2 = game.add.sprite(0, -backgroundHeight, backgroundName);
+		spriteLayers['background'].removeAll(true);
+		spriteLayers['background'].add(backgroundSprites.background1);
+		spriteLayers['background'].add(backgroundSprites.background2);
 	}
 	
 	function possiblySpawnRandomObstacle() {
@@ -291,16 +297,17 @@ window.onload = function() {
 		}
 	}
 		
-	function moveBackground(background) {
-		if (background.y > 780) {
-			background.y = -800;
-			background.y += 20;
-		} else {
-			background.y += 20;
+	function scrollBackground() {
+		moveBackgroundSprite(backgroundSprites.background1);
+		moveBackgroundSprite(backgroundSprites.background2);
+	}
+	
+	function moveBackgroundSprite(backgroundSprite) {
+		backgroundSprite.y += roadScrollSpeed;
+		if (backgroundSprite.y >= game.height) {
+			backgroundSprite.y -= backgroundSprite.height * 2;
+			// * 2 to leapfrog over the single other background sprite
 		}
-		
-		moveBackground(backgroundSprites.background1);
-		moveBackground(backgroundSprites.background2);
 	}
 	
 	function moveBikeWithKeys(sprite, keymap) {
@@ -320,7 +327,7 @@ window.onload = function() {
 	
 	function spawnObstacle(constructor) {
 		var spawnX = Math.floor((Math.random() * 400) + 201);
-		var spawnY = -100;
+		var spawnY = -100; // FIXME should be negative the height of the obstacle
 		var obstacle = new constructor(game, spawnX, spawnY);
 		
 		spriteLayers['obstacle'].add(obstacle);
@@ -345,7 +352,7 @@ window.onload = function() {
 	
 	function Spikes(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
-		this.verticalSpeed = 5;
+		this.verticalSpeed = roadScrollSpeed;
 		
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
@@ -360,7 +367,7 @@ window.onload = function() {
 	
 	function Barrier(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'barrier', frame);
-		this.verticalSpeed = 5;
+		this.verticalSpeed = roadScrollSpeed;
 		
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
@@ -375,7 +382,7 @@ window.onload = function() {
 	
 	function Pole(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'pole', frame);
-		this.verticalSpeed = 5;
+		this.verticalSpeed = roadScrollSpeed;
 	};
 	
 	Pole.prototype = Object.create(Phaser.Sprite.prototype);
@@ -388,7 +395,7 @@ window.onload = function() {
 	
 	function Police(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'police', frame);
-		this.verticalSpeed = 5;
+		this.verticalSpeed = roadScrollSpeed - 5;
 	};
 	
 	Police.prototype = Object.create(Phaser.Sprite.prototype);
