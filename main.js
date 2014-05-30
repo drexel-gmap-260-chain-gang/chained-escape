@@ -234,7 +234,7 @@ window.onload = function() {
 	
 	function update() {
 		testText.text = 'Chain health: ' + chainHealth;
-		possibleSpawnRandomObstacle();
+		possiblySpawnRandomObstacle();
 		chainCooldown++;
 		timeToSplit--;
 		splitText.text = 'Distance to fork: ' + timeToSplit;
@@ -270,7 +270,7 @@ window.onload = function() {
 		}
 	}
 	
-	function possibleSpawnRandomObstacle() {
+	function possiblySpawnRandomObstacle() {
 		var spawnVal = Math.floor((Math.random() * 100) + 1);
 		var spawnType = Math.floor((Math.random() * 4) + 1);
 		if (spawnVal == 100) {
