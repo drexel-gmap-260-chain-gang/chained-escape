@@ -12,7 +12,9 @@ window.onload = function() {
 	var testText, splitText;
 	var forces;
 	var timeToSplit;
-	var chainHealth, chainCooldown;
+	var chainHealth;
+	var timeBeforeNextChainYankAllowed; // a cooldown
+	var timeBeforeNextSpawnAllowed; // a cooldown
 	var spriteLayers = {};
 	
 	var keymaps = {
@@ -78,8 +80,8 @@ window.onload = function() {
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 10;
-		chainCooldown = 0;
-		spawnCooldown = 0;
+		timeBeforeNextChainYankAllowed = 0;
+		timeBeforeNextSpawnAllowed = 100;
 		timeToSplit = 5000;
 		
 		//game.world.boundsCollidesWith
@@ -244,8 +246,8 @@ window.onload = function() {
 		checkForChainYank();
 		
 		// update variables
-		chainCooldown++;
-		spawnCooldown++;
+		timeBeforeNextChainYankAllowed = Math.max(timeBeforeNextChainYankAllowed - 1, 0);
+		timeBeforeNextSpawnAllowed = Math.max(timeBeforeNextSpawnAllowed - 1, 0);
 		timeToSplit--;
 		
 		// update text
@@ -268,9 +270,9 @@ window.onload = function() {
 		var p2Vel = Math.round(playerBikes.player2.body.velocity.x)
 		if ((game.input.keyboard.isDown(keymaps.player1["right"]) && game.input.keyboard.isDown(keymaps.player2["left"])) ||
 		(game.input.keyboard.isDown(keymaps.player1["left"]) && game.input.keyboard.isDown(keymaps.player2["right"]))) {
-			if (p1Vel == 0 && p2Vel == 0 && chainCooldown > 50) {
+			if (p1Vel === 0 && p2Vel === 0 && timeBeforeNextChainYankAllowed <= 0) {
 				testText.text = 'kerCHINK!';
-				chainCooldown = 0;
+				timeBeforeNextChainYankAllowed = 50;
 				chainHealth = chainHealth - 1;
 			}
 		}
@@ -286,9 +288,11 @@ window.onload = function() {
 	}
 	
 	function possiblySpawnRandomObstacle() {
-		var spawnVal = Math.floor((Math.random() * 100) + 1);
-		var spawnType = Math.floor((Math.random() * 4) + 1);
-		if (spawnVal == 100) {
+		if (timeBeforeNextSpawnAllowed > 0) {
+			return;
+		}
+		if (Math.random() < 0.01) {
+			var spawnType = Math.floor((Math.random() * 4) + 1);
 			switch (spawnType) {
 			case 1:
 				spawnSpikes();
