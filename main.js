@@ -281,8 +281,10 @@ window.onload = function() {
 	}
 	
 	function checkForChainYank() {
-		if (this.ticks == null)
-			this.ticks = 0;
+		if (this.xticks == null)
+			this.xticks = 0;
+		if (this.yticks == null)
+			this.yticks = 0;
 		if (this.lastX == null)
 			this.lastX = 0;
 		if (this.lastY == null)
@@ -301,24 +303,49 @@ window.onload = function() {
 		{
 			if (this.lastX == null || this.currentX > this.lastX)
 			{
-				this.ticks++;
+				this.xticks++;
 				this.lastX = this.currentX;
-				if (dist > 189 && ticks > 16) {
+				if (dist > 189 && this.xticks > 16) {
 					testText.text = 'kerCHINK!';
 					timeBeforeNextChainYankAllowed = 50;
 					chainHealth = chainHealth - 1;
-					this.ticks = -10;
+					this.xticks = -10;
 				}
 			}
 			else
 			{
 				this.lastX = 69;
-				this.ticks = 0;
+				this.xticks = 0;
 			}
 		}
 		else
 		{
 			this.lastX = 69;
+			this.xticks = 0;
+		}
+		
+		if (this.currentY > 70)
+		{
+			if (this.lastY == null || this.currentY > this.lastY)
+			{
+				this.yticks++;
+				this.lastY = this.currentY;
+				if (dist > 189 && this.yticks > 16) {
+					testText.text = 'kerCHINK!';
+					timeBeforeNextChainYankAllowed = 50;
+					chainHealth = chainHealth - 1;
+					this.yticks = -10;
+				}
+			}
+			else
+			{
+				this.lastY = 69;
+				this.yticks = 0;
+			}
+		}
+		else
+		{
+			this.lastY = 69;
 			this.ticks = 0;
 		}
 			
