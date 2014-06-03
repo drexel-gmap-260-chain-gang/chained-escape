@@ -9,6 +9,7 @@ window.onload = function() {
 	
 	var playerBikes = {};
 	var backgroundSprites = {};
+	var interactableChain = [];
 	var testText, splitText;
 	var forces;
 	var timeToSplit;
@@ -16,6 +17,7 @@ window.onload = function() {
 	var timeBeforeNextChainYankAllowed; // a cooldown
 	var timeBeforeNextSpawnAllowed; // a cooldown
 	var spriteLayers = {};
+	var concluded = false;
 	
 	var keymaps = {
 		player1: {
@@ -90,6 +92,7 @@ window.onload = function() {
 		_.each(playerBikes, function(bike) {
 			// sprites are too big; scale images down
 			bike.scale.setTo(0.4, 0.4);
+			bike.health = 3;
 			
 			game.physics.p2.enable(bike, false);
 			// hack to counteract weight of chain:
@@ -135,10 +138,20 @@ window.onload = function() {
 	}
 	
 	function loseTheGame() {
+		concluded = true;
 		playMusic(sounds.defeatSound);
 		var defeatText = game.add.text(150, 200, 'You Lose', {font: "72px Arial", fill: "#ff8080", align: "center"});
 		spriteLayers['HUD'].add(defeatText)
 		// TODO show failure screen
+		// TODO allow player to try again or return to main menu
+	}
+	
+	function winTheGame() {
+		concluded = true;
+		playMusic(sounds.defeatSound);
+		var victoryText = game.add.text(150, 200, 'You WIN!', {font: "72px Arial", fill: "#80ff80", align: "center"});
+		spriteLayers['HUD'].add(victoryText)
+		// TODO show victory screen
 		// TODO allow player to try again or return to main menu
 	}
 	
@@ -238,11 +251,23 @@ window.onload = function() {
 			if (i === length) {
 				game.physics.p2.createLockConstraint(newChainSprite, endSprite, [0,chainDistance], maxForce);
 			}
+			if (i != 0 && i != length)
+				interactableChain.push(newChainSprite);
 		}
+	}
+	
+	function confirmEndStates ()
+	{
+		if ((playerBikes.player1.health <= 0) || (playerBikes.player2.health <= 0))
+			loseTheGame();
+		if (chainHealth <= 0)
+			winTheGame();
 	}
 	
 	function update() {
 		// make objects spawn, move, and interact
+		if (concluded == false)
+			confirmEndStates();
 		possiblySpawnRandomObstacle();
 		scrollBackground();
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1);
@@ -349,7 +374,7 @@ window.onload = function() {
 			this.ticks = 0;
 		}
 			
-		testText.text = 'Unused: ' + this.ticks + ", Players X distance: " + this.currentX + ", chain health: " + chainHealth;
+		testText.text = 'P1: ' + playerBikes.player1.health + ", P2: " + playerBikes.player2.health + ", chain health: " + chainHealth;
 	}
 	
 	function changeToBackground(backgroundName) {
@@ -457,6 +482,8 @@ window.onload = function() {
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
 		this.verticalSpeed = roadScrollSpeed;
 		this.scale.setTo(0.4, 0.4)
+		this.p1Damage = false;
+		this.p2Damage = false;
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
@@ -465,6 +492,22 @@ window.onload = function() {
 	
 	Spikes.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		if (checkOverlap(this,playerBikes.player2))
+		{
+			if (this.p2Damage == false)
+			{
+				playerBikes.player2.health = playerBikes.player2.health - 1;
+				this.p2Damage = true;
+			}
+		}
+		if (checkOverlap(this,playerBikes.player1))
+		{
+			if (this.p1Damage == false)
+			{
+				playerBikes.player1.health = playerBikes.player1.health - 1;
+				this.p1Damage = true;
+			}
+		}
 		this.x = this.setX;
 	};
 	
@@ -473,6 +516,8 @@ window.onload = function() {
 		Phaser.Sprite.call(this, game, x, y, 'barrier', frame);
 		this.verticalSpeed = roadScrollSpeed;
 		this.scale.setTo(0.4, 0.4)
+		this.p1Damage = false;
+		this.p2Damage = false;
 		var playerHasStruck = false; // to prevent dealing damage multiple times
 	};
 	
@@ -481,12 +526,38 @@ window.onload = function() {
 	
 	Barrier.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		if (checkOverlap(this,playerBikes.player2))
+		{
+			if (this.p2Damage == false)
+			{
+				playerBikes.player2.health = playerBikes.player2.health - 1;
+				this.p2Damage = true;
+			}
+		}
+		if (checkOverlap(this,playerBikes.player1))
+		{
+			if (this.p1Damage == false)
+			{
+				playerBikes.player1.health = playerBikes.player1.health - 1;
+				this.p1Damage = true;
+			}
+		}
+		for (var i = 0; i < interactableChain.length; i++)
+		{
+			if (checkOverlap(this,interactableChain[i]))
+			{
+				chainHealth = chainHealth - 3;
+				this.destroy();
+			}
+		}
 	};
 	
 	
 	function Pole(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'pole', frame);
 		this.scale.setTo(0.4, 0.4)
+		this.p1Damage = false;
+		this.p2Damage = false;
 		this.verticalSpeed = roadScrollSpeed;
 	};
 	
@@ -495,6 +566,22 @@ window.onload = function() {
 	
 	Pole.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		if (checkOverlap(this,playerBikes.player2))
+		{
+			if (this.p2Damage == false)
+			{
+				playerBikes.player2.health = playerBikes.player2.health - 1;
+				this.p2Damage = true;
+			}
+		}
+		if (checkOverlap(this,playerBikes.player1))
+		{
+			if (this.p1Damage == false)
+			{
+				playerBikes.player1.health = playerBikes.player1.health - 1;
+				this.p1Damage = true;
+			}
+		}
 	};
 	
 	
@@ -509,5 +596,31 @@ window.onload = function() {
 	
 	Police.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		if (checkOverlap(this,playerBikes.player2))
+		{
+			playerBikes.player2.health = playerBikes.player2.health - 1;
+			this.destroy();
+		}
+		if (checkOverlap(this,playerBikes.player1))
+		{
+			playerBikes.player2.health = playerBikes.player1.health - 1;
+			this.destroy();
+		}
+		for (var i = 0; i < interactableChain.length; i++)
+		{
+			if (checkOverlap(this,interactableChain[i]))
+			{
+				chainHealth = chainHealth - 3;
+				this.destroy();
+			}
+		}
 	};
+	
+	function checkOverlap(spriteA, spriteB) {
+
+    var boundsA = spriteA.getBounds();
+    var boundsB = spriteB.getBounds();
+
+    return Phaser.Rectangle.intersects(boundsA, boundsB);
+	}
 };
