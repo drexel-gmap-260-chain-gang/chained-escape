@@ -124,6 +124,7 @@ window.onload = function() {
 		addHotkey(Phaser.Keyboard.L, loseTheGame, this);
 		addHotkey(Phaser.Keyboard.M, toggleMute, this);
 		addHotkey(Phaser.Keyboard.P, togglePause, this);
+		addHotkey(Phaser.Keyboard.Y, cheat, this);
 	}
 	
 	function createSpriteLayers(objectToStoreLayersIn, layerNamesFromBackToFront) {
@@ -137,6 +138,12 @@ window.onload = function() {
 	function addHotkey(keyCode, handler, handlerContext) {
 		var hotkey = game.input.keyboard.addKey(keyCode);
 		hotkey.onDown.add(handler, handlerContext);
+	}
+	
+	function cheat() {
+		var defeatText = game.add.text(520, 10, 'CHEATER!', {font: "12px Arial", fill: "#00ff00", align: "center"});
+		playerBikes.player1.health = 5000;
+		playerBikes.player2.health = 5000;
 	}
 	
 	function loseTheGame() {
