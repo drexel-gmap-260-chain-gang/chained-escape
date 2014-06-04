@@ -10,6 +10,8 @@ window.onload = function() {
 	var playerBikes = {};
 	var backgroundSprites = {};
 	var interactableChain = [];
+	var chainConstraints = [];
+	var chainEnds = [];
 	var testText, splitText;
 	var forces;
 	var timeToSplit;
@@ -147,6 +149,10 @@ window.onload = function() {
 	}
 	
 	function winTheGame() {
+		for (var i = 0; i < chainConstraints.length; i++)
+			game.physics.p2.removeConstraint(chainConstraints[i]);
+		playerBikes.player1.body.data.gravityScale = 0;
+		playerBikes.player2.body.data.gravityScale = 0;
 		concluded = true;
 		playMusic(sounds.defeatSound);
 		var victoryText = game.add.text(150, 200, 'You WIN!', {font: "72px Arial", fill: "#80ff80", align: "center"});
@@ -238,21 +244,24 @@ window.onload = function() {
 			newChainSprite.body.collideWorldBounds = false;
 			
 			if (i === 0) {
-				game.physics.p2.createLockConstraint(newChainSprite, startSprite, [0,chainDistance], maxForce);
+				chainConstraints.push(game.physics.p2.createLockConstraint(newChainSprite, startSprite, [0,chainDistance], maxForce));
+				chainEnds.push(newChainSprite);
 				// anchor the first one created
 			} else {
 				newChainSprite.body.mass = 2; // reduce mass for every chain link
 			}
 			// after the first link is created we can add the constraint
 			if (previousChainSprite) {
-				game.physics.p2.createRevoluteConstraint(newChainSprite, [0,-chainDistance], previousChainSprite, [0,chainDistance], maxForce);
+				chainConstraints.push(game.physics.p2.createRevoluteConstraint(newChainSprite, [0,-chainDistance], previousChainSprite, [0,chainDistance], maxForce));
 			}
 			previousChainSprite = newChainSprite;
 			if (i === length) {
-				game.physics.p2.createLockConstraint(newChainSprite, endSprite, [0,chainDistance], maxForce);
+				chainConstraints.push(game.physics.p2.createLockConstraint(newChainSprite, endSprite, [0,chainDistance], maxForce));
 			}
 			if (i != 0 && i != length)
 				interactableChain.push(newChainSprite);
+			else
+				chainEnds.push(newChainSprite);
 		}
 	}
 	
