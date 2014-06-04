@@ -598,6 +598,12 @@ window.onload = function() {
 		Phaser.Sprite.call(this, game, x, y, 'police', frame);
 		this.scale.setTo(0.4, 0.4)
 		this.verticalSpeed = roadScrollSpeed - 5;
+		var player = randomIntInRangeInclusive(1, 2)
+		if (player == 1)
+			this.chasee = playerBikes.player1;
+		else
+			this.chasee = playerBikes.player2;
+		this.chainDamage = false;
 	};
 	
 	Police.prototype = Object.create(Phaser.Sprite.prototype);
@@ -605,6 +611,10 @@ window.onload = function() {
 	
 	Police.prototype.update = function() {
 		this.y += this.verticalSpeed;
+		if (this.chasee.x >= this.x)
+			this.x += 2;
+		else
+			this.x -= 2;
 		if (checkOverlap(this,playerBikes.player2))
 		{
 			playerBikes.player2.health = playerBikes.player2.health - 1;
@@ -619,7 +629,11 @@ window.onload = function() {
 		{
 			if (checkOverlap(this,interactableChain[i]))
 			{
-				chainHealth = chainHealth - 3;
+				if (this.chainDamage == false)
+				{
+					chainHealth = chainHealth - 5;
+					this.chainDamage = true;
+				}
 				this.destroy();
 			}
 		}
