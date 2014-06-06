@@ -27,12 +27,14 @@ window.onload = function() {
 			right: Phaser.Keyboard.RIGHT,
 			up: Phaser.Keyboard.UP,
 			down: Phaser.Keyboard.DOWN,
+			fire: Phaser.Keyboard.SHIFT,
 		},
 		player2: {
 			left: Phaser.Keyboard.A,
 			right: Phaser.Keyboard.D,
 			up: Phaser.Keyboard.W,
 			down: Phaser.Keyboard.S,
+			fire:Phaser.Keyboard.F,
 		}
 	}
 	
@@ -50,8 +52,10 @@ window.onload = function() {
 		game.load.image('chain-link-2', 'images/chainLink2.png');
 		game.load.image('spikes', 'images/spikes2.png');
 		game.load.image('barrier', 'images/roadBlock2.png');
-		game.load.image('pole', 'images/roadBlock.png');
+		game.load.image('brokenBarrier', 'images/roadBlock2broken.png');
+		game.load.image('pole', 'images/metalPole.png');
 		game.load.image('police', 'images/police.png');
+		game.load.image('bullet', 'images/bullet.png');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
 		game.load.audio('gameplay-start', 'sounds/gameplay music, start of loop.mp3');
 		game.load.audio('gameplay-loop', 'sounds/gameplay music, looping part.mp3');
@@ -62,7 +66,7 @@ window.onload = function() {
 		
 		game.stage.backgroundColor = "#404040";
 		changeToBackground('backgroundPrison');
-		
+	
 		playerBikes.player1 = game.add.sprite(game.world.centerX + 150, game.world.centerY, 'bike-2');
 		playerBikes.player2 = game.add.sprite(game.world.centerX - 125, game.world.centerY, 'bike-1');
 		spriteLayers['playerBike'].add(playerBikes.player1);
@@ -70,6 +74,7 @@ window.onload = function() {
 		
 		
 		var spikes = new Spikes(game, 200, -100);
+		var bullet = new Bullet(game, 200, 500);
 		spriteLayers['obstacle'].add(spikes);
 		
 		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
@@ -94,7 +99,8 @@ window.onload = function() {
 		_.each(playerBikes, function(bike) {
 			// sprites are too big; scale images down
 			bike.scale.setTo(0.4, 0.4);
-			bike.health = 3;
+			bike.health = 5;
+			bike.bullet = null;
 			
 			game.physics.p2.enable(bike, false);
 			// hack to counteract weight of chain:
@@ -288,6 +294,8 @@ window.onload = function() {
 		scrollBackground();
 		moveBikeWithKeys(playerBikes.player1, keymaps.player1);
 		moveBikeWithKeys(playerBikes.player2, keymaps.player2);
+		fireBullets(playerBikes.player1, keymaps.player1);
+		fireBullets(playerBikes.player2, keymaps.player2);
 		_.each(playerBikes, function(bike) {
 			// TODO do to police bikes too when they move sideways after the player
 			rotateBikeToShowSideMovement(bike);
@@ -465,6 +473,21 @@ window.onload = function() {
 		}
 	}
 	
+	function fireBullets(sprite, keymap) {
+		if (game.input.keyboard.isDown(keymap["fire"])) {
+			if (sprite.bullet == null)
+			{
+				sprite.bullet = new Bullet(game, sprite.x, sprite.y);
+				game.add.existing(sprite.bullet);
+			}
+		}
+		if (sprite.bullet == null)
+			return;
+		if (sprite.bullet.y < -30)
+			sprite.bullet = null;
+		
+	}
+	
 	function spawnObstacle(constructor) {
 		var spawnX = randomIntInRangeInclusive(200, 400);
 		var spawnY = -100; // FIXME should be negative the height of the obstacle
@@ -493,6 +516,25 @@ window.onload = function() {
 		timeBeforeNextSpawnAllowed = 300;
 	}
 	
+	
+	function Bullet(game, x, y, frame) {  
+		Phaser.Sprite.call(this, game, x, y, 'bullet', frame);
+		this.verticalSpeed = 17;
+		this.scale.setTo(0.4, 0.4)
+		this.struckObject = false; // to prevent dealing damage multiple times
+	};
+	
+	Bullet.prototype = Object.create(Phaser.Sprite.prototype);
+	Bullet.prototype.constructor = Bullet;
+	
+	Bullet.prototype.update = function() {
+		this.y -= this.verticalSpeed;
+	};
+	
+	Bullet.prototype.struck = function() {
+		this.struckObject = true;
+		this.y = -40;
+	};
 	
 	function Spikes(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
@@ -524,7 +566,6 @@ window.onload = function() {
 				this.p1Damage = true;
 			}
 		}
-		this.x = this.setX;
 	};
 	
 	
@@ -558,13 +599,19 @@ window.onload = function() {
 				this.p1Damage = true;
 			}
 		}
-		for (var i = 0; i < interactableChain.length; i++)
+		if ((playerBikes.player1.bullet != null) && checkOverlap(this,playerBikes.player1.bullet))
 		{
-			if (checkOverlap(this,interactableChain[i]))
-			{
-				chainHealth = chainHealth - 3;
-				this.destroy();
-			}
+			playerBikes.player1.bullet.struck();
+			this.loadTexture('brokenBarrier', 0);
+			this.p2Damage = true;
+			this.p1Damage = true;
+		}
+		if ((playerBikes.player2.bullet != null) && checkOverlap(this,playerBikes.player2.bullet))
+		{
+			playerBikes.player2.bullet.struck();
+			this.loadTexture('brokenBarrier', 0);
+			this.p2Damage = true;
+			this.p1Damage = true;
 		}
 	};
 	
@@ -630,6 +677,16 @@ window.onload = function() {
 		if (checkOverlap(this,playerBikes.player1))
 		{
 			playerBikes.player2.health = playerBikes.player1.health - 1;
+			this.destroy();
+		}
+		if ((playerBikes.player1.bullet != null) && checkOverlap(this,playerBikes.player1.bullet))
+		{
+			playerBikes.player1.bullet.struck();
+			this.destroy();
+		}
+		if ((playerBikes.player2.bullet != null) && checkOverlap(this,playerBikes.player2.bullet))
+		{
+			playerBikes.player2.bullet.struck();
 			this.destroy();
 		}
 		for (var i = 0; i < interactableChain.length; i++)
