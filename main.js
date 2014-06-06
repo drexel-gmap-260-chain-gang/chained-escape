@@ -73,10 +73,6 @@ window.onload = function() {
 		spriteLayers['playerBike'].add(playerBikes.player2);
 		
 		
-		var spikes = new Spikes(game, 200, -100);
-		var bullet = new Bullet(game, 200, 500);
-		spriteLayers['obstacle'].add(spikes);
-		
 		testText = game.add.text(10, 740, 'forces = 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
 		spriteLayers['HUD'].add(testText)
 		splitText = game.add.text(10, 770, 'Distance to fork: 0', {font: "20px Arial", fill: "#ffffff", align: "left"});
@@ -87,7 +83,7 @@ window.onload = function() {
 		game.physics.p2.gravity.y = 600;
 		chainHealth = 50;
 		timeBeforeNextChainYankAllowed = 0;
-		timeBeforeNextSpawnAllowed = 100; // give player time to get their bearings at game start
+		timeBeforeNextSpawnAllowed = 200; // give player time to get their bearings at game start
 		timeToSplit = 5000;
 		
 		var leftWallX = 125;
