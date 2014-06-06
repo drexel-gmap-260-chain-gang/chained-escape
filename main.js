@@ -393,7 +393,7 @@ window.onload = function() {
 			this.ticks = 0;
 		}
 		
-		testText.text = 'P1: ' + clipNegative(playerBikes.player1.health) + ", P2: " + clipNegative(playerBikes.player2.health) + ", chain health: " + chainHealth;
+		testText.text = 'P1: ' + clipNegative(playerBikes.player1.health) + ", P2: " + clipNegative(playerBikes.player2.health) + ", chain health: " + clipNegative(chainHealth);
 	}
 	
 	function changeToBackground(backgroundName) {
