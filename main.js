@@ -303,13 +303,13 @@ window.onload = function() {
 		checkForChainYank();
 		
 		// update variables
-		timeBeforeNextChainYankAllowed = Math.max(timeBeforeNextChainYankAllowed - 1, 0);
-		timeBeforeNextSpawnAllowed = Math.max(timeBeforeNextSpawnAllowed - 1, 0);
+		timeBeforeNextChainYankAllowed = clipNegative(timeBeforeNextChainYankAllowed - 1);
+		timeBeforeNextSpawnAllowed = clipNegative(timeBeforeNextSpawnAllowed - 1);
 		timeToSplit--;
 		
 		// update text
 		
-		splitText.text = 'Distance to fork: ' + Math.max(timeToSplit, 0);
+		splitText.text = 'Distance to fork: ' + clipNegative(timeToSplit);
 		
 		// check for time-based events
 		if (timeToSplit === 3000) {
@@ -320,6 +320,10 @@ window.onload = function() {
 			// TODO show crashing animation
 			loseTheGame();
 		}
+	}
+	
+	function clipNegative(number) {
+		return Math.max(number, 0);
 	}
 	
 	function rotateBikeToShowSideMovement(bikeSprite) {
@@ -348,10 +352,10 @@ window.onload = function() {
 		this.currentX = diffX;
 		this.currentY = diffY;
 		
-		if (this.currentX > 70)
-		{
-			if (this.lastX == null || this.currentX > this.lastX)
-			{
+		// FIXME code duplication below
+		
+		if (this.currentX > 70) {
+			if (this.lastX == null || this.currentX > this.lastX) {
 				this.xticks++;
 				this.lastX = this.currentX;
 				if (dist > 179 && this.xticks > 16) {
@@ -360,23 +364,17 @@ window.onload = function() {
 					chainHealth = chainHealth - 1;
 					this.xticks = -10;
 				}
-			}
-			else
-			{
+			} else {
 				this.lastX = 69;
 				this.xticks = 0;
 			}
-		}
-		else
-		{
+		} else {
 			this.lastX = 69;
 			this.xticks = 0;
 		}
 		
-		if (this.currentY > 70)
-		{
-			if (this.lastY == null || this.currentY > this.lastY)
-			{
+		if (this.currentY > 70) {
+			if (this.lastY == null || this.currentY > this.lastY) {
 				this.yticks++;
 				this.lastY = this.currentY;
 				if (dist > 179 && this.yticks > 16) {
@@ -385,20 +383,16 @@ window.onload = function() {
 					chainHealth = chainHealth - 1;
 					this.yticks = -10;
 				}
-			}
-			else
-			{
+			} else {
 				this.lastY = 69;
 				this.yticks = 0;
 			}
-		}
-		else
-		{
+		} else {
 			this.lastY = 69;
 			this.ticks = 0;
 		}
-			
-		testText.text = 'P1: ' + playerBikes.player1.health + ", P2: " + playerBikes.player2.health + ", chain health: " + chainHealth;
+		
+		testText.text = 'P1: ' + clipNegative(playerBikes.player1.health) + ", P2: " + clipNegative(playerBikes.player2.health) + ", chain health: " + chainHealth;
 	}
 	
 	function changeToBackground(backgroundName) {
