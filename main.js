@@ -148,8 +148,9 @@ window.onload = function() {
 	
 	function cheat() {
 		var defeatText = game.add.text(520, 10, 'CHEATER!', {font: "12px Arial", fill: "#00ff00", align: "center"});
-		playerBikes.player1.health = 5000;
-		playerBikes.player2.health = 5000;
+		_.each(playerBikes, function(playerBike) {
+			playerBike.health = 5000;
+		});
 	}
 	
 	function loseTheGame() {
@@ -164,8 +165,9 @@ window.onload = function() {
 	function winTheGame() {
 		for (var i = 0; i < chainConstraints.length; i++)
 			game.physics.p2.removeConstraint(chainConstraints[i]);
-		playerBikes.player1.body.data.gravityScale = 0;
-		playerBikes.player2.body.data.gravityScale = 0;
+		_.each(playerBikes, function(playerBike) {
+			playerBike.body.data.gravityScale = 0;
+		});
 		concluded = true;
 		playMusic(sounds.defeatSound);
 		var victoryText = game.add.text(150, 200, 'You WIN!', {font: "72px Arial", fill: "#80ff80", align: "center"});
@@ -271,15 +273,14 @@ window.onload = function() {
 			if (i === length) {
 				chainConstraints.push(game.physics.p2.createLockConstraint(newChainSprite, endSprite, [0,chainDistance], maxForce));
 			}
-			if (i != 0 && i != length)
+			if (i !== 0 && i !== length)
 				interactableChain.push(newChainSprite);
 			else
 				chainEnds.push(newChainSprite);
 		}
 	}
 	
-	function confirmEndStates ()
-	{
+	function confirmEndStates () {
 		if ((playerBikes.player1.health <= 0) || (playerBikes.player2.health <= 0))
 			loseTheGame();
 		if (chainHealth <= 0)
@@ -288,7 +289,7 @@ window.onload = function() {
 	
 	function update() {
 		// make objects spawn, move, and interact
-		if (concluded == false)
+		if (concluded === false)
 			confirmEndStates();
 		possiblySpawnRandomObstacle();
 		scrollBackground();
@@ -334,13 +335,13 @@ window.onload = function() {
 	}
 	
 	function checkForChainYank() {
-		if (this.xticks == null)
+		if (this.xticks === null)
 			this.xticks = 0;
-		if (this.yticks == null)
+		if (this.yticks === null)
 			this.yticks = 0;
-		if (this.lastX == null)
+		if (this.lastX === null)
 			this.lastX = 0;
-		if (this.lastY == null)
+		if (this.lastY === null)
 			this.lastY = 0;
 		var p1Vel = Math.round(playerBikes.player1.body.x);
 		var p2Vel = Math.round(playerBikes.player2.body.x);
@@ -355,7 +356,7 @@ window.onload = function() {
 		// FIXME code duplication below
 		
 		if (this.currentX > 70) {
-			if (this.lastX == null || this.currentX > this.lastX) {
+			if (this.lastX === null || this.currentX > this.lastX) {
 				this.xticks++;
 				this.lastX = this.currentX;
 				if (dist > 179 && this.xticks > 16) {
@@ -374,7 +375,7 @@ window.onload = function() {
 		}
 		
 		if (this.currentY > 70) {
-			if (this.lastY == null || this.currentY > this.lastY) {
+			if (this.lastY === null || this.currentY > this.lastY) {
 				this.yticks++;
 				this.lastY = this.currentY;
 				if (dist > 179 && this.yticks > 16) {
@@ -469,13 +470,12 @@ window.onload = function() {
 	
 	function fireBullets(sprite, keymap) {
 		if (game.input.keyboard.isDown(keymap["fire"])) {
-			if (sprite.bullet == null)
-			{
+			if (sprite.bullet === null) {
 				sprite.bullet = new Bullet(game, sprite.x, sprite.y);
 				game.add.existing(sprite.bullet);
 			}
 		}
-		if (sprite.bullet == null)
+		if (sprite.bullet === null)
 			return;
 		if (sprite.bullet.y < -30)
 			sprite.bullet = null;
@@ -544,18 +544,14 @@ window.onload = function() {
 	
 	Spikes.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		if (checkOverlap(this,playerBikes.player2))
-		{
-			if (this.p2Damage == false)
-			{
+		if (spritesDoOverlap(this, playerBikes.player2)) {
+			if (this.p2Damage === false) {
 				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
-		if (checkOverlap(this,playerBikes.player1))
-		{
-			if (this.p1Damage == false)
-			{
+		if (spritesDoOverlap(this, playerBikes.player1)) {
+			if (this.p1Damage === false) {
 				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
 			}
@@ -577,31 +573,25 @@ window.onload = function() {
 	
 	Barrier.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		if (checkOverlap(this,playerBikes.player2))
-		{
-			if (this.p2Damage == false)
-			{
+		if (spritesDoOverlap(this,playerBikes.player2)) {
+			if (this.p2Damage === false) {
 				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
-		if (checkOverlap(this,playerBikes.player1))
-		{
-			if (this.p1Damage == false)
-			{
+		if (spritesDoOverlap(this,playerBikes.player1)) {
+			if (this.p1Damage === false) {
 				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
 			}
 		}
-		if ((playerBikes.player1.bullet != null) && checkOverlap(this,playerBikes.player1.bullet))
-		{
+		if ((playerBikes.player1.bullet !== null) && spritesDoOverlap(this,playerBikes.player1.bullet)) {
 			playerBikes.player1.bullet.struck();
 			this.loadTexture('brokenBarrier', 0);
 			this.p2Damage = true;
 			this.p1Damage = true;
 		}
-		if ((playerBikes.player2.bullet != null) && checkOverlap(this,playerBikes.player2.bullet))
-		{
+		if ((playerBikes.player2.bullet !== null) && spritesDoOverlap(this,playerBikes.player2.bullet)) {
 			playerBikes.player2.bullet.struck();
 			this.loadTexture('brokenBarrier', 0);
 			this.p2Damage = true;
@@ -623,18 +613,15 @@ window.onload = function() {
 	
 	Pole.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		if (checkOverlap(this,playerBikes.player2))
-		{
-			if (this.p2Damage == false)
-			{
+		
+		if (spritesDoOverlap(this, playerBikes.player2)) {
+			if (this.p2Damage === false) {
 				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
-		if (checkOverlap(this,playerBikes.player1))
-		{
-			if (this.p1Damage == false)
-			{
+		if (spritesDoOverlap(this, playerBikes.player1)) {
+			if (this.p1Damage === false) {
 				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
 			}
@@ -647,7 +634,7 @@ window.onload = function() {
 		this.scale.setTo(0.4, 0.4)
 		this.verticalSpeed = roadScrollSpeed - 5;
 		var player = randomIntInRangeInclusive(1, 2)
-		if (player == 1)
+		if (player === 1)
 			this.chasee = playerBikes.player1;
 		else
 			this.chasee = playerBikes.player2;
@@ -659,36 +646,34 @@ window.onload = function() {
 	
 	Police.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		if (this.chasee.x >= this.x)
-			this.x += 2;
-		else
-			this.x -= 2;
-		if (checkOverlap(this,playerBikes.player2))
-		{
-			playerBikes.player2.health = playerBikes.player2.health - 1;
+		
+		var horizontalMovementSpeed = 2;
+		if (this.chasee.x >= this.x + horizontalMovementSpeed) {
+			this.x += horizontalMovementSpeed;
+		} else if (this.chasee.x <= this.x - horizontalMovementSpeed) {
+			this.x -= horizontalMovementSpeed;
+		}
+		
+		if (spritesDoOverlap(this, playerBikes.player1)) {
+			playerBikes.player1.health -= 1;
 			this.destroy();
 		}
-		if (checkOverlap(this,playerBikes.player1))
-		{
-			playerBikes.player2.health = playerBikes.player1.health - 1;
+		if (spritesDoOverlap(this, playerBikes.player2)) {
+			playerBikes.player2.health -= 1;
 			this.destroy();
 		}
-		if ((playerBikes.player1.bullet != null) && checkOverlap(this,playerBikes.player1.bullet))
-		{
+		if ((playerBikes.player1.bullet != null) && spritesDoOverlap(this, playerBikes.player1.bullet)) {
 			playerBikes.player1.bullet.struck();
 			this.destroy();
 		}
-		if ((playerBikes.player2.bullet != null) && checkOverlap(this,playerBikes.player2.bullet))
-		{
+		if ((playerBikes.player2.bullet != null) && spritesDoOverlap(this, playerBikes.player2.bullet)) {
 			playerBikes.player2.bullet.struck();
 			this.destroy();
 		}
-		for (var i = 0; i < interactableChain.length; i++)
-		{
-			if (checkOverlap(this,interactableChain[i]))
-			{
-				if (this.chainDamage == false)
-				{
+		
+		for (var i = 0; i < interactableChain.length; i++) {
+			if (spritesDoOverlap(this,interactableChain[i])) {
+				if (this.chainDamage === false) {
 					chainHealth = chainHealth - 5;
 					this.chainDamage = true;
 				}
@@ -697,11 +682,10 @@ window.onload = function() {
 		}
 	};
 	
-	function checkOverlap(spriteA, spriteB) {
-
-    var boundsA = spriteA.getBounds();
-    var boundsB = spriteB.getBounds();
-
-    return Phaser.Rectangle.intersects(boundsA, boundsB);
+	function spritesDoOverlap(spriteA, spriteB) {
+		var boundsA = spriteA.getBounds();
+		var boundsB = spriteB.getBounds();
+		
+		return Phaser.Rectangle.intersects(boundsA, boundsB);
 	}
 };
