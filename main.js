@@ -53,7 +53,7 @@ window.onload = function() {
 		game.load.image('spikes', 'images/spikes2.png');
 		game.load.image('barrier', 'images/roadBlock2.png');
 		game.load.image('brokenBarrier', 'images/roadBlock2broken.png');
-		game.load.image('pole', 'images/metalPole.png');
+		game.load.image('pole', 'images/metalpole.png');
 		game.load.image('police', 'images/police.png');
 		game.load.image('bullet', 'images/bullet.png');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
