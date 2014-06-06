@@ -81,7 +81,7 @@ window.onload = function() {
 
 		game.physics.startSystem(Phaser.Physics.P2JS);
 		game.physics.p2.gravity.y = 600;
-		chainHealth = 50;
+		chainHealth = 40;
 		timeBeforeNextChainYankAllowed = 0;
 		timeBeforeNextSpawnAllowed = 200; // give player time to get their bearings at game start
 		timeToSplit = 5000;
