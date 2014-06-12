@@ -57,7 +57,7 @@ window.onload = function() {
 		game.load.image('police', 'images/police.png');
 		game.load.image('bullet', 'images/bullet.png');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
-		game.load.audio('gameplay-start', 'sounds/gameplay music, start of loop.mp3');
+		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');
 		game.load.audio('gameplay-loop', 'sounds/gameplay music, looping part.mp3');
 	}
 	
