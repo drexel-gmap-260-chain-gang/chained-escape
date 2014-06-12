@@ -57,6 +57,7 @@ window.onload = function() {
 		game.load.image('police', 'images/police.png');
 		game.load.image('bullet', 'images/bullet.png');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
+		game.load.audio('victory', 'sounds/victory.mp3');
 		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');
 		game.load.audio('gameplay-loop', 'sounds/gameplay music, looping part.mp3');
 	}
@@ -121,6 +122,7 @@ window.onload = function() {
 		createChain(13, playerBikes.player1, playerBikes.player2);
 		
 		sounds.defeatSound = game.add.audio('defeat');
+		sounds.victorySound = game.add.audio('victory');
 		sounds.gameplayMusicStart = game.add.audio('gameplay-start');
 		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
 		playTwoPartLoopingMusic(sounds.gameplayMusicStart, sounds.gameplayMusicLoop);
@@ -167,7 +169,7 @@ window.onload = function() {
 			playerBike.body.data.gravityScale = 0;
 		});
 		concluded = true;
-		playMusic(sounds.defeatSound);
+		playMusic(sounds.victorySound);
 		var victoryText = game.add.text(150, 200, 'You WIN!', {font: "72px Arial", fill: "#80ff80", align: "center"});
 		spriteLayers['HUD'].add(victoryText)
 		// TODO show victory screen
