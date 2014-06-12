@@ -23,18 +23,18 @@ window.onload = function() {
 	
 	var keymaps = {
 		player1: {
+			left: Phaser.Keyboard.A,
+			right: Phaser.Keyboard.D,
+			up: Phaser.Keyboard.W,
+			down: Phaser.Keyboard.S,
+			fire: Phaser.Keyboard.F,
+		},
+		player2: {
 			left: Phaser.Keyboard.LEFT,
 			right: Phaser.Keyboard.RIGHT,
 			up: Phaser.Keyboard.UP,
 			down: Phaser.Keyboard.DOWN,
 			fire: Phaser.Keyboard.SHIFT,
-		},
-		player2: {
-			left: Phaser.Keyboard.A,
-			right: Phaser.Keyboard.D,
-			up: Phaser.Keyboard.W,
-			down: Phaser.Keyboard.S,
-			fire:Phaser.Keyboard.F,
 		}
 	}
 	
@@ -68,8 +68,8 @@ window.onload = function() {
 		game.stage.backgroundColor = "#404040";
 		changeToBackground('backgroundPrison');
 	
-		playerBikes.player1 = game.add.sprite(game.world.centerX + 150, game.world.centerY, 'bike-2');
-		playerBikes.player2 = game.add.sprite(game.world.centerX - 125, game.world.centerY, 'bike-1');
+		playerBikes.player1 = game.add.sprite(game.world.centerX - 75, game.world.centerY, 'bike-1');
+		playerBikes.player2 = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'bike-2');
 		spriteLayers['playerBike'].add(playerBikes.player1);
 		spriteLayers['playerBike'].add(playerBikes.player2);
 		
@@ -236,7 +236,7 @@ window.onload = function() {
 		
 		var maxForce = 100000; // the force that holds the rectangles together
 		for (var i=0; i<=length; i++) {
-			var x = xAnchor-(i*xInterval); // creat chain links from right to left
+			var x = xAnchor+(i*xInterval); // create chain links from left to right
 			var y = yAnchor;
 			if (i%2 === 0) {
 				newChainSprite = game.add.sprite(x, y, 'chain-link-2', undefined, spriteLayers['chain']);
@@ -345,8 +345,8 @@ window.onload = function() {
 			this.lastY = 0;
 		var p1Vel = Math.round(playerBikes.player1.body.x);
 		var p2Vel = Math.round(playerBikes.player2.body.x);
-		var p1del = Math.round(playerBikes.player1.deltaX);
-		var p2del = Math.round(playerBikes.player2.deltaX);
+		//var p1delta = Math.round(playerBikes.player1.deltaX);
+		//var p2delta = Math.round(playerBikes.player2.deltaX);
 		var diffX = Math.abs(Math.round(playerBikes.player1.x) - Math.round(playerBikes.player2.x))
 		var diffY = Math.abs(Math.round(playerBikes.player1.y) - Math.round(playerBikes.player2.y))
 		var dist = Math.sqrt((diffX*diffX) + (diffY*diffY));
