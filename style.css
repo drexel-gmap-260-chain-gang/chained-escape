@@ -1,0 +1,17 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	/* center everything */
+	max-width: 610px; /* the width of the game plus its borders */
+	margin-left: auto;
+	margin-right: auto;
+	
+	background: black;
+	color: #dddddd;
+}
+
+#game-area {
+	border: 5px solid #cccccc;
+}
