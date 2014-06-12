@@ -46,8 +46,8 @@ window.onload = function() {
 		game.load.image('backgroundCountry', 'images/road-country.png');
 		game.load.image('backgroundPrison', 'images/road-prison.png');
 		game.load.image('backgroundHighway', 'images/road-highway.png');
-		game.load.image('bike-1', 'images/motorbike-1.png');
-		game.load.image('bike-2', 'images/motorbike-2.png');
+		game.load.image('bike-1', 'images/biker_dude1.png');
+		game.load.image('bike-2', 'images/biker_dude2.png');
 		game.load.image('chain-link-1', 'images/chainLink1.png');
 		game.load.image('chain-link-2', 'images/chainLink2.png');
 		game.load.image('spikes', 'images/spikes2.png');
@@ -94,9 +94,10 @@ window.onload = function() {
 		
 		_.each(playerBikes, function(bike) {
 			// sprites are too big; scale images down
-			bike.scale.setTo(0.4, 0.4);
+			bike.scale.setTo(0.04, 0.04);
 			bike.health = 5;
 			bike.bullet = null;
+			
 			
 			game.physics.p2.enable(bike, false);
 			// hack to counteract weight of chain:
@@ -107,6 +108,7 @@ window.onload = function() {
 			
 			bike.body.data.mass = 100;
 			bike.body.fixedRotation = true;
+			bike.hitbox = new Phaser.Rectangle(bike.x-14, bike.y-32, 27, 62);
 		})
 			
 		_.each(keymaps, function(keymap) {
@@ -462,6 +464,8 @@ window.onload = function() {
 		} else if (game.input.keyboard.isDown(keymap["down"])) {
 			sprite.body.moveDown(bikeVertSpeed);
 		}
+		playerBikes.player1.hitbox.setTo(playerBikes.player1.body.x-14, playerBikes.player1.y-32, 27, 62);
+		playerBikes.player2.hitbox.setTo(playerBikes.player2.body.x-14, playerBikes.player2.y-32, 27, 62);
 	}
 	
 	function fireBullets(sprite, keymap) {
@@ -530,6 +534,7 @@ window.onload = function() {
 		Phaser.Sprite.call(this, game, x, y, 'spikes', frame);
 		this.verticalSpeed = roadScrollSpeed;
 		this.scale.setTo(0.4, 0.4)
+		this.hitbox = new Phaser.Rectangle(this.x + 2, this.y+4, 123, 14);
 		this.p1Damage = false;
 		this.p2Damage = false;
 		var playerHasStruck = false; // to prevent dealing damage multiple times
@@ -540,13 +545,14 @@ window.onload = function() {
 	
 	Spikes.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		if (spritesDoOverlap(this, playerBikes.player2)) {
+		this.hitbox.setTo(this.x + 2, this.y+4, 123, 14);
+		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
 				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
-		if (spritesDoOverlap(this, playerBikes.player1)) {
+		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
 				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
@@ -559,6 +565,7 @@ window.onload = function() {
 		Phaser.Sprite.call(this, game, x, y, 'barrier', frame);
 		this.verticalSpeed = roadScrollSpeed;
 		this.scale.setTo(0.4, 0.4)
+		this.hitbox = new Phaser.Rectangle(this.x+21, this.y+4, 144, 35);
 		this.p1Damage = false;
 		this.p2Damage = false;
 		var playerHasStruck = false; // to prevent dealing damage multiple times
@@ -569,25 +576,26 @@ window.onload = function() {
 	
 	Barrier.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		if (spritesDoOverlap(this,playerBikes.player2)) {
+		this.hitbox.setTo(this.x+21, this.y+4, 144, 35);
+		if (spritesDoOverlap(this,playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
 				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
-		if (spritesDoOverlap(this,playerBikes.player1)) {
+		if (spritesDoOverlap(this,playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
 				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
 			}
 		}
-		if ((playerBikes.player1.bullet !== null) && spritesDoOverlap(this,playerBikes.player1.bullet)) {
+		if ((playerBikes.player1.bullet !== null) && spritesDoOverlap(this,playerBikes.player1.bullet, this.hitbox)) {
 			playerBikes.player1.bullet.struck();
 			this.loadTexture('brokenBarrier', 0);
 			this.p2Damage = true;
 			this.p1Damage = true;
 		}
-		if ((playerBikes.player2.bullet !== null) && spritesDoOverlap(this,playerBikes.player2.bullet)) {
+		if ((playerBikes.player2.bullet !== null) && spritesDoOverlap(this,playerBikes.player2.bullet, this.hitbox)) {
 			playerBikes.player2.bullet.struck();
 			this.loadTexture('brokenBarrier', 0);
 			this.p2Damage = true;
@@ -598,7 +606,8 @@ window.onload = function() {
 	
 	function Pole(game, x, y, frame) {  
 		Phaser.Sprite.call(this, game, x, y, 'pole', frame);
-		this.scale.setTo(0.4, 0.4)
+		this.scale.setTo(0.4, 0.4);
+		this.hitbox = new Phaser.Rectangle(this.x+23, this.y+67, 10, 22);
 		this.p1Damage = false;
 		this.p2Damage = false;
 		this.verticalSpeed = roadScrollSpeed;
@@ -609,14 +618,14 @@ window.onload = function() {
 	
 	Pole.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		
-		if (spritesDoOverlap(this, playerBikes.player2)) {
+		this.hitbox.setTo(this.x+23, this.y+67, 10, 22);
+		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
 				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
-		if (spritesDoOverlap(this, playerBikes.player1)) {
+		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
 				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
@@ -629,6 +638,7 @@ window.onload = function() {
 		Phaser.Sprite.call(this, game, x, y, 'police', frame);
 		this.scale.setTo(0.4, 0.4)
 		this.verticalSpeed = roadScrollSpeed - 5;
+		this.hitbox = new Phaser.Rectangle(this.x+6, this.y+4, 29, 66);
 		var player = randomIntInRangeInclusive(1, 2)
 		if (player === 1)
 			this.chasee = playerBikes.player1;
@@ -642,7 +652,7 @@ window.onload = function() {
 	
 	Police.prototype.update = function() {
 		this.y += this.verticalSpeed;
-		
+		this.hitbox.setTo(this.x+6, this.y+4, 29, 66);
 		var horizontalMovementSpeed = 2;
 		if (this.chasee.x >= this.x + horizontalMovementSpeed) {
 			this.x += horizontalMovementSpeed;
@@ -650,25 +660,25 @@ window.onload = function() {
 			this.x -= horizontalMovementSpeed;
 		}
 		
-		if (spritesDoOverlap(this, playerBikes.player1)) {
+		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			playerBikes.player1.health -= 1;
 			this.destroy();
 		}
-		if (spritesDoOverlap(this, playerBikes.player2)) {
+		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			playerBikes.player2.health -= 1;
 			this.destroy();
 		}
-		if ((playerBikes.player1.bullet != null) && spritesDoOverlap(this, playerBikes.player1.bullet)) {
+		if ((playerBikes.player1.bullet != null) && spritesDoOverlap(this, playerBikes.player1.bullet, this.hitbox)) {
 			playerBikes.player1.bullet.struck();
 			this.destroy();
 		}
-		if ((playerBikes.player2.bullet != null) && spritesDoOverlap(this, playerBikes.player2.bullet)) {
+		if ((playerBikes.player2.bullet != null) && spritesDoOverlap(this, playerBikes.player2.bullet, this.hitbox)) {
 			playerBikes.player2.bullet.struck();
 			this.destroy();
 		}
 		
 		for (var i = 0; i < interactableChain.length; i++) {
-			if (spritesDoOverlap(this,interactableChain[i])) {
+			if (spritesDoOverlap(this,interactableChain[i],this.hitbox)) {
 				if (this.chainDamage === false) {
 					chainHealth = chainHealth - 5;
 					this.chainDamage = true;
@@ -678,10 +688,12 @@ window.onload = function() {
 		}
 	};
 	
-	function spritesDoOverlap(spriteA, spriteB) {
-		var boundsA = spriteA.getBounds();
-		var boundsB = spriteB.getBounds();
+	function spritesDoOverlap(spriteA, spriteB, hitboxA, hitboxB) {
+		if (!hitboxA)
+			var hitboxA = spriteA.getBounds();
+		if (!hitboxB)
+			var hitboxB = spriteB.getBounds();
 		
-		return Phaser.Rectangle.intersects(boundsA, boundsB);
+		return Phaser.Rectangle.intersects(hitboxA, hitboxB);
 	}
 };
