@@ -57,6 +57,9 @@ window.onload = function() {
 		game.load.image('police', 'images/police.png');
 		game.load.image('bullet', 'images/bullet.png');
 		game.load.audio('gunshot', 'sounds/Gun shot.mp3');
+		game.load.audio('clink-1', 'sounds/clink-1.mp3');
+		game.load.audio('clink-2', 'sounds/clink-2.mp3');
+		game.load.audio('clink-3', 'sounds/clink-3.mp3');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
 		game.load.audio('victory', 'sounds/victory.mp3');
 		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');
@@ -143,6 +146,10 @@ window.onload = function() {
 	
 	function loadSoundEffects(sounds) {
 		sounds.gunshot = game.add.audio('gunshot');
+		sounds.clinks = [];
+		sounds.clinks.push(game.add.audio('clink-1'));
+		sounds.clinks.push(game.add.audio('clink-2'));
+		sounds.clinks.push(game.add.audio('clink-3'));
 	}
 	
 	function loadMusic(sounds) {
@@ -372,9 +379,9 @@ window.onload = function() {
 				this.xticks++;
 				this.lastX = this.currentX;
 				if (dist > 179 && this.xticks > 16) {
-					testText.text = 'kerCHINK!';
+					_.sample(sounds.clinks).play();
 					timeBeforeNextChainYankAllowed = 50;
-					chainHealth = chainHealth - 1;
+					chainHealth -= 1;
 					this.xticks = -10;
 				}
 			} else {
@@ -391,9 +398,9 @@ window.onload = function() {
 				this.yticks++;
 				this.lastY = this.currentY;
 				if (dist > 179 && this.yticks > 16) {
-					testText.text = 'kerCHINK!';
+					_.sample(sounds.clinks).play();
 					timeBeforeNextChainYankAllowed = 50;
-					chainHealth = chainHealth - 1;
+					chainHealth -= 1;
 					this.yticks = -10;
 				}
 			} else {
@@ -697,7 +704,8 @@ window.onload = function() {
 		for (var i = 0; i < interactableChain.length; i++) {
 			if (spritesDoOverlap(this,interactableChain[i],this.hitbox)) {
 				if (this.chainDamage === false) {
-					chainHealth = chainHealth - 5;
+					_.sample(sounds.clinks).play();
+					chainHealth -= 5;
 					this.chainDamage = true;
 				}
 				this.destroy();
