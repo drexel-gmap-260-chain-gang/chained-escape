@@ -1,5 +1,7 @@
-window.onload = function() {
-	var game = new Phaser.Game(600, 800, Phaser.AUTO, 'game-area', { preload: preload, create: create, update: update });
+var ChainedEscape = {};
+ChainedEscape.Game = function(game) {};
+
+ChainedEscape.Game.prototype = (function() {
 	
 	// global variables:
 	
@@ -40,7 +42,6 @@ window.onload = function() {
 	
 	var music; // whatever music is currently playing
 	var sounds = {};
-	
 	
 	function preload() {
 		game.load.image('backgroundCountry', 'images/road-country.png');
@@ -721,4 +722,10 @@ window.onload = function() {
 		
 		return Phaser.Rectangle.intersects(hitboxA, hitboxB);
 	}
-};
+	
+	return {
+		preload: preload,
+		create: create,
+		update: update
+	};
+})();

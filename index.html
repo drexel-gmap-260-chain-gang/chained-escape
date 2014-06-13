@@ -3,10 +3,21 @@
     <head>
         <meta charset="utf-8" />
         <title>Chained Escape – game</title>
+        <link rel="stylesheet" href="style.css" type="text/css" />
         <script src="libs/phaser.min.js"></script>
         <script src="libs/underscore-min.js"></script>
-        <script src="main.js"></script>
-        <link rel="stylesheet" href="style.css" title="" type="" />
+        <!--<script src="src/Boot.js"></script>-->
+        <!--<script src="src/Preloader.js"></script>-->
+        <!--<script src="src/MainMenu.js"></script>-->
+        <script src="src/Game.js"></script>
+        <script>
+            var game = new Phaser.Game(600, 800, Phaser.AUTO, 'game-area');
+            //game.state.add('Boot', ChainedEscape.Boot);
+            //game.state.add('Preloader', ChainedEscape.Preloader);
+            //game.state.add('MainMenu', ChainedEscape.MainMenu);
+            game.state.add('Game', ChainedEscape.Game);
+            game.state.start('Game');
+        </script>
     </head>
     <body>
         <h1>Chained Escape</h1>
