@@ -29,6 +29,7 @@ ChainedEscape.Preloader.prototype = (function() {
 		game.load.audio('clink-3', 'sounds/clink-3.mp3');
 		game.load.audio('player-hurt', 'sounds/player-hurt.mp3');
 		game.load.audio('police-hurt', 'sounds/police-hurt.mp3');
+		game.load.audio('cops-coming', 'sounds/Cops.mp3');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
 		game.load.audio('victory', 'sounds/victory.mp3');
 		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');

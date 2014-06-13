@@ -3,6 +3,7 @@ ChainedEscape.OpeningCinematic.prototype = (function() {
 	
 	var displayedImage; // holds the current image of the comic
 	var delayBetweenImagesInMs = 3*1000;
+	var sirenSound;
 	var timeoutId;
 	
 	function create() {
@@ -32,6 +33,8 @@ ChainedEscape.OpeningCinematic.prototype = (function() {
 		displayedImage.destroy();
 		displayedImage = game.add.image(0, 0, 'opening-comic-3');
 		timeoutId = setTimeout(displayPage4, delayBetweenImagesInMs);
+		sirenSound = game.add.audio('cops-coming');
+		sirenSound.play();
 	}
 	
 	function displayPage4() {
@@ -42,6 +45,9 @@ ChainedEscape.OpeningCinematic.prototype = (function() {
 	
 	function startGame() {
 		clearTimeout(timeoutId);
+		if (sirenSound !== undefined) {
+			sirenSound.stop();
+		}
 		this.game.state.start('Game');
 	}
 	
