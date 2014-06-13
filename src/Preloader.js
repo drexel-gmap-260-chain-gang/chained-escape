@@ -18,6 +18,10 @@ ChainedEscape.Preloader.prototype = (function() {
 		game.load.image('police', 'images/police.png');
 		game.load.image('bullet', 'images/bullet.png');
 		game.load.image('start-game-button', 'images/start-game-button.png');
+		game.load.image('opening-comic-1', 'images/ChainedEscapeComic_001.jpg');
+		game.load.image('opening-comic-2', 'images/ChainedEscapeComic_002.jpg');
+		game.load.image('opening-comic-3', 'images/ChainedEscapeComic_003.jpg');
+		game.load.image('opening-comic-4', 'images/ChainedEscapeComic_004.jpg');
 		
 		game.load.audio('gunshot', 'sounds/Gun shot.mp3');
 		game.load.audio('clink-1', 'sounds/clink-1.mp3');

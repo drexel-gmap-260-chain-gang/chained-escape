@@ -8,7 +8,7 @@ ChainedEscape.MainMenu.prototype = (function() {
 	}
 	
 	function startGame() {
-		this.game.state.start('Game');
+		this.game.state.start('OpeningCinematic');
 	}
 	
 	return {
