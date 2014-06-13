@@ -213,7 +213,9 @@ ChainedEscape.Game.prototype = (function() {
 	}
 	
 	function toggleMute() {
-		game.sound.mute = !game.sound.mute;
+		if (!game.paused) {
+			game.sound.mute = !game.sound.mute;
+		}
 	}
 	
 	function togglePause() {
