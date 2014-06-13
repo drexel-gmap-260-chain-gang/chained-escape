@@ -12,6 +12,10 @@ body {
 	color: #dddddd;
 }
 
+h1 {
+	color: #eeeeee;
+}
+
 #game-area {
 	border: 5px solid #cccccc;
 }
