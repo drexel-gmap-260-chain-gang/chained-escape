@@ -1,6 +1,6 @@
 # Chained Escape
 
-A game for the class GMAP 260 at Drexel University, by the six-person group “Chain Gang”.
+A game [for the class GMAP 260](https://sites.google.com/site/drexelgames/courses/digm-260/homework-assignments/homeworkweek5) at Drexel University, by the six-person group “Chain Gang”. Made in six weeks.
 
 **[Play the game](http://drexel-gmap-260-chain-gang.github.io/chained-escape/)** (the version hosted on GitHub, built directly from [this repository](https://github.com/drexel-gmap-260-chain-gang/chained-escape))
 
