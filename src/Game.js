@@ -306,7 +306,10 @@ ChainedEscape.Game.prototype = (function() {
 		
 		// update text
 		
-		splitText.text = 'Distance to fork: ' + clipNegative(timeToSplit);
+		var framesForBikeToMoveBikeLength = 9; // an estimate
+		var bikeLengthInMeters = 1.5;
+		var framesToMoveOneMeter = framesForBikeToMoveBikeLength / bikeLengthInMeters;
+		splitText.text = "Distance to fork: " + Math.round(clipNegative(timeToSplit) / framesToMoveOneMeter) + " m";
 		
 		// check for time-based events
 		if (timeToSplit === 3000) {
