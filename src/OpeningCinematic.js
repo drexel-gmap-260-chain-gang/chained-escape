@@ -8,13 +8,14 @@ ChainedEscape.OpeningCinematic.prototype = (function() {
 	var timeoutId;
 	
 	function create() {
-		// FIXME space doesn’t work when enabled
-		//addHotkey(Phaser.Keyboard.SPACE, startGame, this);
+		addHotkey(Phaser.Keyboard.SPACEBAR, startGame, this);
+		addHotkey(Phaser.Keyboard.ENTER, startGame, this);
+		addHotkey(Phaser.Keyboard.NUMPAD_ENTER, startGame, this);
 		addHotkey(Phaser.Keyboard.ESC, startGame, this);
 		sirenSound = game.add.audio('cops-coming');
 		
 		displayPage1();
-		skipText = game.add.text(470, 785, "Press [Esc] to skip", {font: "12px Arial", fill: "#444444", align: "right"});
+		skipText = game.add.text(468, 785, "Press Space to skip", {font: "12px Arial", fill: "#444444", align: "right"});
 	}
 	
 	function addHotkey(keyCode, handler, handlerContext) {
