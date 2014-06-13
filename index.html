@@ -8,14 +8,14 @@
         <script src="libs/underscore-min.js"></script>
         <script src="src/Boot.js"></script>
         <script src="src/Preloader.js"></script>
-        <!--<script src="src/MainMenu.js"></script>-->
+        <script src="src/MainMenu.js"></script>
         <!--<script src="src/OpeningCinematic.js"></script>-->
         <script src="src/Game.js"></script>
         <script>
             var game = new Phaser.Game(600, 800, Phaser.AUTO, 'game-area');
             game.state.add('Boot', ChainedEscape.Boot);
             game.state.add('Preloader', ChainedEscape.Preloader);
-            //game.state.add('MainMenu', ChainedEscape.MainMenu);
+            game.state.add('MainMenu', ChainedEscape.MainMenu);
             //game.state.add('OpeningCinematic', ChainedEscape.OpeningCinematic);
             game.state.add('Game', ChainedEscape.Game);
             game.state.start('Boot');

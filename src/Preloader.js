@@ -17,6 +17,8 @@ ChainedEscape.Preloader.prototype = (function() {
 		game.load.image('pole', 'images/metalpole.png');
 		game.load.image('police', 'images/police.png');
 		game.load.image('bullet', 'images/bullet.png');
+		game.load.image('start-game-button', 'images/start-game-button.png');
+		
 		game.load.audio('gunshot', 'sounds/Gun shot.mp3');
 		game.load.audio('clink-1', 'sounds/clink-1.mp3');
 		game.load.audio('clink-2', 'sounds/clink-2.mp3');
@@ -30,7 +32,7 @@ ChainedEscape.Preloader.prototype = (function() {
 	}
 	
 	function create() {
-		this.game.state.start('Game');
+		this.game.state.start('MainMenu');
 	}
 	
 	return {

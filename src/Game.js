@@ -41,10 +41,6 @@ ChainedEscape.Game.prototype = (function() {
 	var music; // whatever music is currently playing
 	var sounds = {};
 	
-	function preload() {
-		// don’t need to do anything; everything was already loaded by the preloader state
-	}
-	
 	function create() {
 		createSpriteLayers(spriteLayers, ['background', 'obstacle', 'chain', 'playerBike', 'HUD']);
 		
@@ -723,7 +719,6 @@ ChainedEscape.Game.prototype = (function() {
 	}
 	
 	return {
-		preload: preload,
 		create: create,
 		update: update
 	};
