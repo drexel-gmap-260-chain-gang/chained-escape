@@ -148,7 +148,8 @@ window.onload = function() {
 	}
 	
 	function cheat() {
-		var defeatText = game.add.text(520, 10, 'CHEATER!', {font: "12px Arial", fill: "#00ff00", align: "center"});
+		var cheaterText = game.add.text(520, 10, 'CHEATER!', {font: "12px Arial", fill: "#00ff00", align: "center"});
+		spriteLayers['HUD'].add(cheaterText)
 		_.each(playerBikes, function(playerBike) {
 			playerBike.health = 5000;
 		});
