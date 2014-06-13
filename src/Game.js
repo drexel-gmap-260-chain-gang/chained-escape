@@ -61,6 +61,8 @@ ChainedEscape.Game.prototype = (function() {
 		game.load.audio('clink-1', 'sounds/clink-1.mp3');
 		game.load.audio('clink-2', 'sounds/clink-2.mp3');
 		game.load.audio('clink-3', 'sounds/clink-3.mp3');
+		game.load.audio('player-hurt', 'sounds/player-hurt.mp3');
+		game.load.audio('police-hurt', 'sounds/police-hurt.mp3');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
 		game.load.audio('victory', 'sounds/victory.mp3');
 		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');
@@ -151,6 +153,8 @@ ChainedEscape.Game.prototype = (function() {
 		sounds.clinks.push(game.add.audio('clink-1'));
 		sounds.clinks.push(game.add.audio('clink-2'));
 		sounds.clinks.push(game.add.audio('clink-3'));
+		sounds.playerHurt = game.add.audio('player-hurt');
+		sounds.policeHurt = game.add.audio('police-hurt');
 	}
 	
 	function loadMusic(sounds) {
@@ -571,13 +575,15 @@ ChainedEscape.Game.prototype = (function() {
 		this.hitbox.setTo(this.x + 2, this.y+4, 123, 14);
 		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
-				playerBikes.player2.health = playerBikes.player2.health - 1;
+				sounds.playerHurt.play();
+				playerBikes.player2.health -= 1;
 				this.p2Damage = true;
 			}
 		}
 		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
-				playerBikes.player1.health = playerBikes.player1.health - 1;
+				sounds.playerHurt.play();
+				playerBikes.player1.health -= 1;
 				this.p1Damage = true;
 			}
 		}
@@ -602,13 +608,15 @@ ChainedEscape.Game.prototype = (function() {
 		this.hitbox.setTo(this.x+21, this.y+4, 144, 35);
 		if (spritesDoOverlap(this,playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
-				playerBikes.player2.health = playerBikes.player2.health - 1;
+				sounds.playerHurt.play();
+				playerBikes.player2.health -= 1;
 				this.p2Damage = true;
 			}
 		}
 		if (spritesDoOverlap(this,playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
-				playerBikes.player1.health = playerBikes.player1.health - 1;
+				sounds.playerHurt.play();
+				playerBikes.player1.health -= 1;
 				this.p1Damage = true;
 			}
 		}
@@ -646,13 +654,15 @@ ChainedEscape.Game.prototype = (function() {
 		this.hitbox.setTo(this.x+23, this.y+67, 10, 22);
 		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
-				playerBikes.player2.health = playerBikes.player2.health - 1;
+				sounds.playerHurt.play();
+				playerBikes.player2.health -= 1;
 				this.p2Damage = true;
 			}
 		}
 		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
-				playerBikes.player1.health = playerBikes.player1.health - 1;
+				sounds.playerHurt.play();
+				playerBikes.player1.health -= 1;
 				this.p1Damage = true;
 			}
 		}
@@ -686,19 +696,23 @@ ChainedEscape.Game.prototype = (function() {
 		}
 		
 		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
+			sounds.playerHurt.play();
 			playerBikes.player1.health -= 1;
 			this.destroy();
 		}
 		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
+			sounds.playerHurt.play();
 			playerBikes.player2.health -= 1;
 			this.destroy();
 		}
 		if ((playerBikes.player1.bullet != null) && spritesDoOverlap(this, playerBikes.player1.bullet, this.hitbox)) {
 			playerBikes.player1.bullet.struck();
+			sounds.policeHurt.play();
 			this.destroy();
 		}
 		if ((playerBikes.player2.bullet != null) && spritesDoOverlap(this, playerBikes.player2.bullet, this.hitbox)) {
 			playerBikes.player2.bullet.struck();
+			sounds.policeHurt.play();
 			this.destroy();
 		}
 		
@@ -706,6 +720,7 @@ ChainedEscape.Game.prototype = (function() {
 			if (spritesDoOverlap(this,interactableChain[i],this.hitbox)) {
 				if (this.chainDamage === false) {
 					_.sample(sounds.clinks).play();
+					sounds.policeHurt.play();
 					chainHealth -= 5;
 					this.chainDamage = true;
 				}
