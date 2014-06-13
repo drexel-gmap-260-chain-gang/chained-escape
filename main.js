@@ -1,5 +1,5 @@
-ChainedEscape.Game = function(game) {};
-ChainedEscape.Game.prototype = (function() {
+window.onload = function() {
+	var game = new Phaser.Game(600, 800, Phaser.AUTO, 'game-area', { preload: preload, create: create, update: update });
 	
 	// global variables:
 	
@@ -41,8 +41,25 @@ ChainedEscape.Game.prototype = (function() {
 	var music; // whatever music is currently playing
 	var sounds = {};
 	
+	
 	function preload() {
-		// don’t need to do anything; everything was already loaded by the preloader state
+		game.load.image('backgroundCountry', 'images/road-country.png');
+		game.load.image('backgroundPrison', 'images/road-prison.png');
+		game.load.image('backgroundHighway', 'images/road-highway.png');
+		game.load.image('bike-1', 'images/Biker_dude1.png');
+		game.load.image('bike-2', 'images/biker_dude2.png');
+		game.load.image('chain-link-1', 'images/chainLink1.png');
+		game.load.image('chain-link-2', 'images/chainLink2.png');
+		game.load.image('spikes', 'images/spikes2.png');
+		game.load.image('barrier', 'images/roadBlock2.png');
+		game.load.image('brokenBarrier', 'images/roadBlock2broken.png');
+		game.load.image('pole', 'images/metalpole.png');
+		game.load.image('police', 'images/police.png');
+		game.load.image('bullet', 'images/bullet.png');
+		game.load.audio('defeat', 'sounds/defeat.mp3');
+		game.load.audio('victory', 'sounds/victory.mp3');
+		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');
+		game.load.audio('gameplay-loop', 'sounds/gameplay music, looping part.mp3');
 	}
 	
 	function create() {
@@ -104,8 +121,10 @@ ChainedEscape.Game.prototype = (function() {
 		forces = 0; // currently unused
 		createChain(13, playerBikes.player1, playerBikes.player2);
 		
-		loadSoundEffects(sounds);
-		loadMusic(sounds);
+		sounds.defeatSound = game.add.audio('defeat');
+		sounds.victorySound = game.add.audio('victory');
+		sounds.gameplayMusicStart = game.add.audio('gameplay-start');
+		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
 		playTwoPartLoopingMusic(sounds.gameplayMusicStart, sounds.gameplayMusicLoop);
 		
 		addHotkey(Phaser.Keyboard.P, togglePause, this);
@@ -121,23 +140,6 @@ ChainedEscape.Game.prototype = (function() {
 			layer.z = index;
 			objectToStoreLayersIn[name] = layer;
 		});
-	}
-	
-	function loadSoundEffects(sounds) {
-		sounds.gunshot = game.add.audio('gunshot');
-		sounds.clinks = [];
-		sounds.clinks.push(game.add.audio('clink-1'));
-		sounds.clinks.push(game.add.audio('clink-2'));
-		sounds.clinks.push(game.add.audio('clink-3'));
-		sounds.playerHurt = game.add.audio('player-hurt');
-		sounds.policeHurt = game.add.audio('police-hurt');
-	}
-	
-	function loadMusic(sounds) {
-		sounds.defeatSound = game.add.audio('defeat');
-		sounds.victorySound = game.add.audio('victory');
-		sounds.gameplayMusicStart = game.add.audio('gameplay-start');
-		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
 	}
 	
 	function addHotkey(keyCode, handler, handlerContext) {
@@ -360,9 +362,9 @@ ChainedEscape.Game.prototype = (function() {
 				this.xticks++;
 				this.lastX = this.currentX;
 				if (dist > 179 && this.xticks > 16) {
-					_.sample(sounds.clinks).play();
+					testText.text = 'kerCHINK!';
 					timeBeforeNextChainYankAllowed = 50;
-					chainHealth -= 1;
+					chainHealth = chainHealth - 1;
 					this.xticks = -10;
 				}
 			} else {
@@ -379,9 +381,9 @@ ChainedEscape.Game.prototype = (function() {
 				this.yticks++;
 				this.lastY = this.currentY;
 				if (dist > 179 && this.yticks > 16) {
-					_.sample(sounds.clinks).play();
+					testText.text = 'kerCHINK!';
 					timeBeforeNextChainYankAllowed = 50;
-					chainHealth -= 1;
+					chainHealth = chainHealth - 1;
 					this.yticks = -10;
 				}
 			} else {
@@ -475,12 +477,11 @@ ChainedEscape.Game.prototype = (function() {
 			if (sprite.bullet === null) {
 				sprite.bullet = new Bullet(game, sprite.x, sprite.y);
 				game.add.existing(sprite.bullet);
-				sounds.gunshot.play();
 			}
 		}
 		if (sprite.bullet === null)
 			return;
-		if (sprite.bullet.y < sprite.bullet.height)
+		if (sprite.bullet.y < -30)
 			sprite.bullet = null;
 		
 	}
@@ -551,15 +552,13 @@ ChainedEscape.Game.prototype = (function() {
 		this.hitbox.setTo(this.x + 2, this.y+4, 123, 14);
 		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
-				sounds.playerHurt.play();
-				playerBikes.player2.health -= 1;
+				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
 		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
-				sounds.playerHurt.play();
-				playerBikes.player1.health -= 1;
+				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
 			}
 		}
@@ -584,29 +583,25 @@ ChainedEscape.Game.prototype = (function() {
 		this.hitbox.setTo(this.x+21, this.y+4, 144, 35);
 		if (spritesDoOverlap(this,playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
-				sounds.playerHurt.play();
-				playerBikes.player2.health -= 1;
+				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
 		if (spritesDoOverlap(this,playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
-				sounds.playerHurt.play();
-				playerBikes.player1.health -= 1;
+				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
 			}
 		}
 		if ((playerBikes.player1.bullet !== null) && spritesDoOverlap(this,playerBikes.player1.bullet, this.hitbox)) {
 			playerBikes.player1.bullet.struck();
 			this.loadTexture('brokenBarrier', 0);
-			this.alpha = 0.3;
 			this.p2Damage = true;
 			this.p1Damage = true;
 		}
 		if ((playerBikes.player2.bullet !== null) && spritesDoOverlap(this,playerBikes.player2.bullet, this.hitbox)) {
 			playerBikes.player2.bullet.struck();
 			this.loadTexture('brokenBarrier', 0);
-			this.alpha = 0.3;
 			this.p2Damage = true;
 			this.p1Damage = true;
 		}
@@ -630,15 +625,13 @@ ChainedEscape.Game.prototype = (function() {
 		this.hitbox.setTo(this.x+23, this.y+67, 10, 22);
 		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
 			if (this.p2Damage === false) {
-				sounds.playerHurt.play();
-				playerBikes.player2.health -= 1;
+				playerBikes.player2.health = playerBikes.player2.health - 1;
 				this.p2Damage = true;
 			}
 		}
 		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
 			if (this.p1Damage === false) {
-				sounds.playerHurt.play();
-				playerBikes.player1.health -= 1;
+				playerBikes.player1.health = playerBikes.player1.health - 1;
 				this.p1Damage = true;
 			}
 		}
@@ -648,6 +641,7 @@ ChainedEscape.Game.prototype = (function() {
 				if ((playerBikes.player1.x < this.x && playerBikes.player2.x > this.x) || (playerBikes.player1.x > this.x && playerBikes.player2.x < this.x)) {
 					loseTheGame();
 				}
+				this.destroy();
 			}
 		}
 	};
@@ -680,32 +674,26 @@ ChainedEscape.Game.prototype = (function() {
 		}
 		
 		if (spritesDoOverlap(this, playerBikes.player1, this.hitbox, playerBikes.player1.hitbox)) {
-			sounds.playerHurt.play();
 			playerBikes.player1.health -= 1;
 			this.destroy();
 		}
 		if (spritesDoOverlap(this, playerBikes.player2, this.hitbox, playerBikes.player2.hitbox)) {
-			sounds.playerHurt.play();
 			playerBikes.player2.health -= 1;
 			this.destroy();
 		}
 		if ((playerBikes.player1.bullet != null) && spritesDoOverlap(this, playerBikes.player1.bullet, this.hitbox)) {
 			playerBikes.player1.bullet.struck();
-			sounds.policeHurt.play();
 			this.destroy();
 		}
 		if ((playerBikes.player2.bullet != null) && spritesDoOverlap(this, playerBikes.player2.bullet, this.hitbox)) {
 			playerBikes.player2.bullet.struck();
-			sounds.policeHurt.play();
 			this.destroy();
 		}
 		
 		for (var i = 0; i < interactableChain.length; i++) {
 			if (spritesDoOverlap(this,interactableChain[i],this.hitbox)) {
 				if (this.chainDamage === false) {
-					_.sample(sounds.clinks).play();
-					sounds.policeHurt.play();
-					chainHealth -= 5;
+					chainHealth = chainHealth - 5;
 					this.chainDamage = true;
 				}
 				this.destroy();
@@ -721,10 +709,4 @@ ChainedEscape.Game.prototype = (function() {
 		
 		return Phaser.Rectangle.intersects(hitboxA, hitboxB);
 	}
-	
-	return {
-		preload: preload,
-		create: create,
-		update: update
-	};
-})();
+};
