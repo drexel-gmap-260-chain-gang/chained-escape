@@ -598,14 +598,14 @@ ChainedEscape.Game.prototype = (function() {
 		if ((playerBikes.player1.bullet !== null) && spritesDoOverlap(this,playerBikes.player1.bullet, this.hitbox)) {
 			playerBikes.player1.bullet.struck();
 			this.loadTexture('brokenBarrier', 0);
-			this.alpha = 0.3;
+			this.alpha = 0.4;
 			this.p2Damage = true;
 			this.p1Damage = true;
 		}
 		if ((playerBikes.player2.bullet !== null) && spritesDoOverlap(this,playerBikes.player2.bullet, this.hitbox)) {
 			playerBikes.player2.bullet.struck();
 			this.loadTexture('brokenBarrier', 0);
-			this.alpha = 0.3;
+			this.alpha = 0.4;
 			this.p2Damage = true;
 			this.p1Damage = true;
 		}
