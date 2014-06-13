@@ -3,35 +3,45 @@ ChainedEscape.OpeningCinematic.prototype = (function() {
 	
 	var displayedImage; // holds the current image of the comic
 	var delayBetweenImagesInMs = 3*1000;
+	var timeoutId;
 	
 	function create() {
 		displayPage1();
+		// FIXME space doesn’t work when enabled
+		//addHotkey(Phaser.Keyboard.SPACE, startGame, this);
+		addHotkey(Phaser.Keyboard.ESC, startGame, this);
+	}
+	
+	function addHotkey(keyCode, handler, handlerContext) {
+		var hotkey = game.input.keyboard.addKey(keyCode);
+		hotkey.onDown.add(handler, handlerContext);
 	}
 	
 	function displayPage1() {
 		displayedImage = game.add.image(0, 0, 'opening-comic-1');
-		setTimeout(displayPage2, delayBetweenImagesInMs);
+		timeoutId = setTimeout(displayPage2, delayBetweenImagesInMs);
 	}
 	
 	function displayPage2() {
 		displayedImage.destroy();
 		displayedImage = game.add.image(0, 0, 'opening-comic-2');
-		setTimeout(displayPage3, delayBetweenImagesInMs);
+		timeoutId = setTimeout(displayPage3, delayBetweenImagesInMs);
 	}
 	
 	function displayPage3() {
 		displayedImage.destroy();
 		displayedImage = game.add.image(0, 0, 'opening-comic-3');
-		setTimeout(displayPage4, delayBetweenImagesInMs);
+		timeoutId = setTimeout(displayPage4, delayBetweenImagesInMs);
 	}
 	
 	function displayPage4() {
 		displayedImage.destroy();
 		displayedImage = game.add.image(0, 0, 'opening-comic-4');
-		setTimeout(startGame, delayBetweenImagesInMs);
+		timeoutId = setTimeout(startGame, delayBetweenImagesInMs);
 	}
 	
 	function startGame() {
+		clearTimeout(timeoutId);
 		this.game.state.start('Game');
 	}
 	
