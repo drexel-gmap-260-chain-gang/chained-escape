@@ -56,6 +56,7 @@ window.onload = function() {
 		game.load.image('pole', 'images/metalpole.png');
 		game.load.image('police', 'images/police.png');
 		game.load.image('bullet', 'images/bullet.png');
+		game.load.audio('gunshot', 'sounds/Gun shot.mp3');
 		game.load.audio('defeat', 'sounds/defeat.mp3');
 		game.load.audio('victory', 'sounds/victory.mp3');
 		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');
@@ -121,10 +122,8 @@ window.onload = function() {
 		forces = 0; // currently unused
 		createChain(13, playerBikes.player1, playerBikes.player2);
 		
-		sounds.defeatSound = game.add.audio('defeat');
-		sounds.victorySound = game.add.audio('victory');
-		sounds.gameplayMusicStart = game.add.audio('gameplay-start');
-		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
+		loadSoundEffects(sounds);
+		loadMusic(sounds);
 		playTwoPartLoopingMusic(sounds.gameplayMusicStart, sounds.gameplayMusicLoop);
 		
 		addHotkey(Phaser.Keyboard.P, togglePause, this);
@@ -140,6 +139,17 @@ window.onload = function() {
 			layer.z = index;
 			objectToStoreLayersIn[name] = layer;
 		});
+	}
+	
+	function loadSoundEffects(sounds) {
+		sounds.gunshot = game.add.audio('gunshot');
+	}
+	
+	function loadMusic(sounds) {
+		sounds.defeatSound = game.add.audio('defeat');
+		sounds.victorySound = game.add.audio('victory');
+		sounds.gameplayMusicStart = game.add.audio('gameplay-start');
+		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
 	}
 	
 	function addHotkey(keyCode, handler, handlerContext) {
@@ -477,11 +487,12 @@ window.onload = function() {
 			if (sprite.bullet === null) {
 				sprite.bullet = new Bullet(game, sprite.x, sprite.y);
 				game.add.existing(sprite.bullet);
+				sounds.gunshot.play();
 			}
 		}
 		if (sprite.bullet === null)
 			return;
-		if (sprite.bullet.y < -30)
+		if (sprite.bullet.y < sprite.bullet.height)
 			sprite.bullet = null;
 		
 	}
