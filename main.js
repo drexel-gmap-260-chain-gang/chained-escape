@@ -46,7 +46,7 @@ window.onload = function() {
 		game.load.image('backgroundCountry', 'images/road-country.png');
 		game.load.image('backgroundPrison', 'images/road-prison.png');
 		game.load.image('backgroundHighway', 'images/road-highway.png');
-		game.load.image('bike-1', 'images/Biker_dude1.png');
+		game.load.image('bike-1', 'images/biker_dude1.png');
 		game.load.image('bike-2', 'images/biker_dude2.png');
 		game.load.image('chain-link-1', 'images/chainLink1.png');
 		game.load.image('chain-link-2', 'images/chainLink2.png');
