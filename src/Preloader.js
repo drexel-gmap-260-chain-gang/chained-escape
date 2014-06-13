@@ -2,7 +2,7 @@ ChainedEscape.Preloader = function(game) {};
 ChainedEscape.Preloader.prototype = (function() {
 	
 	function preload() {
-		var loadProgressText = game.add.text(400, 400, "Loading...", {font: "20px Arial", fill: "#ffffff", align: "center"});
+		var loadProgressText = this.add.text(200, 300, "Loading...", {font: "48px Arial", fill: "#ffffff", align: "center"});
 		
 		game.load.image('backgroundCountry', 'images/road-country.png');
 		game.load.image('backgroundPrison', 'images/road-prison.png');
@@ -27,8 +27,6 @@ ChainedEscape.Preloader.prototype = (function() {
 		game.load.audio('victory', 'sounds/victory.mp3');
 		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');
 		game.load.audio('gameplay-loop', 'sounds/gameplay music, looping part.mp3');
-		
-		loadProgressText.destroy();
 	}
 	
 	function create() {
