@@ -23,17 +23,17 @@ window.onload = function() {
 	
 	var keymaps = {
 		player1: {
-			left: Phaser.Keyboard.A,
-			right: Phaser.Keyboard.D,
 			up: Phaser.Keyboard.W,
+			left: Phaser.Keyboard.A,
 			down: Phaser.Keyboard.S,
+			right: Phaser.Keyboard.D,
 			fire: Phaser.Keyboard.F,
 		},
 		player2: {
-			left: Phaser.Keyboard.LEFT,
-			right: Phaser.Keyboard.RIGHT,
 			up: Phaser.Keyboard.UP,
+			left: Phaser.Keyboard.LEFT,
 			down: Phaser.Keyboard.DOWN,
+			right: Phaser.Keyboard.RIGHT,
 			fire: Phaser.Keyboard.SHIFT,
 		}
 	}
@@ -127,9 +127,10 @@ window.onload = function() {
 		sounds.gameplayMusicLoop = game.add.audio('gameplay-loop');
 		playTwoPartLoopingMusic(sounds.gameplayMusicStart, sounds.gameplayMusicLoop);
 		
-		addHotkey(Phaser.Keyboard.L, loseTheGame, this);
-		addHotkey(Phaser.Keyboard.M, toggleMute, this);
 		addHotkey(Phaser.Keyboard.P, togglePause, this);
+		addHotkey(Phaser.Keyboard.ESC, togglePause, this); // synonym for P
+		addHotkey(Phaser.Keyboard.M, toggleMute, this);
+		addHotkey(Phaser.Keyboard.L, loseTheGame, this);
 		addHotkey(Phaser.Keyboard.Y, cheat, this);
 	}
 	
