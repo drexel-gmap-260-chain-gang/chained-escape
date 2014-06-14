@@ -4,7 +4,8 @@ ChainedEscape.Boot = function(game) {};
 ChainedEscape.Boot.prototype = (function() {
 	
 	function preload() {
-		// would load a progress bar image here if we had one
+		game.load.image('preload-bar-background', 'images/preload-bar-background.png');
+		game.load.image('preload-bar-fill', 'images/preload-bar-fill.png');
 	}
 	
 	function create() {

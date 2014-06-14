@@ -1,14 +1,11 @@
 ChainedEscape.Preloader = function(game) {};
 ChainedEscape.Preloader.prototype = (function() {
 	
-	var loadProgressText;
-	var updateProgressTimeoutId;
-	var updateProgressDelayInMs = 1000 / 4;
-	
 	function preload() {
 		var loadInfoText = this.add.text(200, 300, "Loading...", {font: "48px Arial", fill: "#ffffff", align: "center"});
-		loadProgressText = this.add.text(265, 375, "", {font: "48px Arial", fill: "#ffffff", align: "center"});
-		setProgressText(0);
+		var preloadBarBackground = this.add.sprite(100, 375, 'preload-bar-background');
+		var preloadBarFill = this.add.sprite(100, 375, 'preload-bar-fill');
+		this.load.setPreloadSprite(preloadBarFill);
 		
 		game.load.image('backgroundCountry', 'images/road-country.png');
 		game.load.image('backgroundPrison', 'images/road-prison.png');
@@ -40,21 +37,9 @@ ChainedEscape.Preloader.prototype = (function() {
 		game.load.audio('victory', 'sounds/victory.mp3');
 		game.load.audio('gameplay-start', 'sounds/gameplay music, before looping part.mp3');
 		game.load.audio('gameplay-loop', 'sounds/gameplay music, looping part.mp3');
-		
-		updateProgressTimeoutId = setTimeout(updateProgress, updateProgressDelayInMs);
-	}
-	
-	function updateProgress() {
-		setProgressText(game.load.progress);
-		updateProgressTimeoutId = setTimeout(updateProgress, updateProgressDelayInMs);
-	}
-	
-	function setProgressText(progressRounded) {
-		loadProgressText.text = progressRounded.toString() + "%";
 	}
 	
 	function create() {
-		clearTimeout(updateProgressTimeoutId);
 		this.game.state.start('MainMenu');
 	}
 	
