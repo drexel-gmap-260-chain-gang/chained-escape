@@ -4,7 +4,7 @@ A game [for the class GMAP 260](https://sites.google.com/site/drexelgames/course
 
 **[Play the game](http://drexel-gmap-260-chain-gang.github.io/chained-escape/)** (the version hosted on GitHub, built directly from [this repository](https://github.com/drexel-gmap-260-chain-gang/chained-escape))
 
-[put screenshot or promotional image here]
+[![gameplay screenshot](images/gameplay-screenshot.png)](http://drexel-gmap-260-chain-gang.github.io/chained-escape/)
 
 A 2D top-down action game where your motorbikes are chained together. Runs in the browser, using the [Phaser](http://phaser.io/) game library.
 
