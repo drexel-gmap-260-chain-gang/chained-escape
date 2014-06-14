@@ -9,6 +9,7 @@
         <script src="src/Boot.js"></script>
         <script src="src/Preloader.js"></script>
         <script src="src/MainMenu.js"></script>
+        <script src="src/Instructions.js"></script>
         <script src="src/OpeningCinematic.js"></script>
         <script src="src/Game.js"></script>
         <script>
@@ -16,6 +17,7 @@
             game.state.add('Boot', ChainedEscape.Boot);
             game.state.add('Preloader', ChainedEscape.Preloader);
             game.state.add('MainMenu', ChainedEscape.MainMenu);
+            game.state.add('Instructions', ChainedEscape.Instructions);
             game.state.add('OpeningCinematic', ChainedEscape.OpeningCinematic);
             game.state.add('Game', ChainedEscape.Game);
             game.state.start('Boot');
