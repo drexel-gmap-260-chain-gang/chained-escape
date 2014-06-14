@@ -28,9 +28,9 @@ To run the game locally, while working on it, just serve the folder with an HTTP
 
 ## Group members
 
-* Alexander Ku
-* Aviva Gomberg
-* Walter Zelenak
-* Andrew Scherch
-* Rory O’Kane
-* Andy Condon
+* Alexander Ku (art)
+* Aviva Gomberg (art)
+* Walter Zelenak (sound)
+* Andrew Scherch (code)
+* [Rory O’Kane](http://roryokane.com/) (code, music)
+* Andy Condon (organization)
